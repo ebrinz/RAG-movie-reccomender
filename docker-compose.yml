@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  postgres:
+    build:
+      context: ./docker/db
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: movie_recco
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  flask_server:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+    restart: always
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgres://user:password@postgres:5432/movie_recco
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./src:/app/src 
+
+  ollama:
+    build:
+      context: ./docker/llm
+    container_name: ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: always
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+
+volumes:
+  postgres_data:
+  ollama_data:

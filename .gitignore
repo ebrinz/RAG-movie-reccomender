@@ -1,0 +1,5 @@
+data/chunks/
+**/__pycache__/
+*json
+*csv
+
