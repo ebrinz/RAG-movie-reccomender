@@ -9,11 +9,13 @@ cur = conn.cursor()
 
 cur.execute("DROP TABLE IF EXISTS movies;")
 
-# Create table
+cur.execute("CREATE EXTENSION IF NOT EXISTS vector;")
+
 cur.execute("""
-CREATE TABLE IF NOT EXISTS movies (
+CREATE TABLE movies (
+    id SERIAL PRIMARY KEY,
     release_year INTEGER,
-    title TEXT,
+    title TEXT NOT NULL,
     origin_ethnicity TEXT,
     director TEXT,
     "cast" TEXT,
@@ -21,13 +23,20 @@ CREATE TABLE IF NOT EXISTS movies (
     wiki_page TEXT,
     plot TEXT,
     plot_summary TEXT,
-    embedding DOUBLE PRECISION[]
+    embedding vector(1024)
 );
 """)
-conn.commit()
+
+cur.execute("""
+CREATE INDEX idx_embedding_vector ON movies USING ivfflat (embedding) WITH (lists = 100);
+""")
+
+cur.execute("""
+CREATE INDEX idx_title ON movies (title);
+""")
 
 # Ingest data from chunks
-chunk_dir = "./data/chunks"
+chunk_dir = "./chunks"
 chunk_files = [os.path.join(chunk_dir, f) for f in os.listdir(chunk_dir) if f.endswith(".json")]
 
 for chunk_file in sorted(chunk_files):

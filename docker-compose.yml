@@ -28,7 +28,8 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ./src:/app/src 
+      - ./src:/app/src
+      - ~/.cache/huggingface:/root/.cache/huggingface
 
   ollama:
     build:
