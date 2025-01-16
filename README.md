@@ -1,5 +1,5 @@
 # ragtime-2-agentic
-
+```
 agentic-rag-project/
 ├── docker/
 │   ├── api/
@@ -31,3 +31,4 @@ agentic-rag-project/
 ├── requirements.txt          # Python dependencies
 ├── README.md                 # Project overview, setup instructions, etc.
 └── .gitignore                # Files and directories to ignore in version control
+```
