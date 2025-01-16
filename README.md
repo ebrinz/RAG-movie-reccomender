@@ -38,10 +38,6 @@ agentic-rag-project/
 
 ```pip install -r requirements.txt```
 
-need hugginface token to donwload model
-huggingface-cli repo download answerdotai/ModernBERT-large --include config.json
-
-
 # Step 1: Run the data generation script
 
 Run data generator script...

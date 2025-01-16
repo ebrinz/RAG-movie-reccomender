@@ -33,13 +33,11 @@ services:
 
   ollama:
     build:
-      context: ./docker/llm
-    container_name: ollama
-    volumes:
-      - ollama_data:/root/.ollama
+      context: .
+      dockerfile: docker/llm/Dockerfile
     ports:
       - "11434:11434"
-    restart: always
+    restart: unless-stopped
 
   frontend:
     build:

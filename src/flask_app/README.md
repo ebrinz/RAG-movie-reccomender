@@ -14,4 +14,3 @@ curl -X POST http://localhost:5000/vector_search \
     "num_neighbors": 3
 }'
 ```
-

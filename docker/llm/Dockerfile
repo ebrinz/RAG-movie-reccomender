@@ -4,5 +4,17 @@ WORKDIR /app
 
 EXPOSE 11434
 
-# If no additional custom command is needed, remove the CMD line
-# CMD ["<your_custom_command>"]
+# Create the start.sh script using RUN
+RUN echo '#!/bin/bash\n\
+ollama serve &\n\
+until ollama status > /dev/null 2>&1; do\n\
+    echo "Waiting for ollama service to start..."\n\
+    sleep 2\n\
+done\n\
+ollama run llama3' > /app/start.sh
+
+# Make the script executable
+RUN chmod +x /app/start.sh
+
+# Override the default entrypoint
+ENTRYPOINT ["/app/start.sh"]
