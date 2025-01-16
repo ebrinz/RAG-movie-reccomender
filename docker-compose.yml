@@ -3,8 +3,8 @@ version: "3.8"
 services:
   postgres:
     build:
-      context: ./docker/db
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: src/db/Dockerfile
     restart: always
     environment:
       POSTGRES_USER: user
@@ -15,10 +15,10 @@ services:
     ports:
       - "5432:5432"
 
-  flask_server:
+  api:
     build:
       context: .
-      dockerfile: docker/api/Dockerfile
+      dockerfile: src/flask_app/Dockerfile
     restart: always
     environment:
       - FLASK_ENV=development
@@ -34,15 +34,15 @@ services:
   ollama:
     build:
       context: .
-      dockerfile: docker/llm/Dockerfile
+      dockerfile: src/llm/Dockerfile
     ports:
       - "11434:11434"
     restart: unless-stopped
 
-  frontend:
+  ui:
     build:
       context: .
-      dockerfile: docker/frontend/Dockerfile
+      dockerfile: src/ui/Dockerfile
     restart: always
     ports:
       - "3000:3000"

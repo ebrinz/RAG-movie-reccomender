@@ -50,7 +50,7 @@ ModernBertModel.from_pretrained('answerdotai/ModernBERT-large', trust_remote_cod
 
 
 # Copy the src directory into /app
-COPY src /app/src
+COPY src/ /app/src
 
 # Set PYTHONPATH to include /app
 ENV PYTHONPATH=/app/src
