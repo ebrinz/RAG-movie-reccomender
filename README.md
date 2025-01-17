@@ -1,33 +1,33 @@
 # ragtime-2-agentic
+
 ```
 agentic-rag-project/
-├── docker/
-│   ├── api/
-│   │   └── Dockerfile        # Dockerfile for Flask API service
-│   ├── llm/
-│   │   └── Dockerfile        # Dockerfile for local LLM service
-│   ├── frontend/
-│   │   └── Dockerfile        # Dockerfile for React frontend
-│   └── db/
-│       └── Dockerfile        # Dockerfile for PostgreSQL service
-├── docker-compose.yml        # Compose file to orchestrate services
-├── data/                     # Directory for local data and datasets
-│   ├── Chunks                # Directory for generated embeddings
-│   └── README.md             # (Optional) Instructions for data placement
+│
 ├── src/                      # Source code for the RAG system
-│   ├── flask_app/            # Flask server code
+│   ├── api/                  # Flask server code
 │   │   ├── __init__.py       # Initialize Flask app and extensions
 │   │   ├── requirements.txt  # TODO: set requirements seperately for each container
 │   │   ├── main.py           # Entry point for the Flask API
 │   │   ├── db.py             # db calls
-│   │   └── routes.py         # API route handlers organized by Blueprints
-│   ├── rag_agent.py          # Core logic for the retrieval-augmented generation agent
-│   ├── local_llm.py          # Wrappers or utilities for interacting with the local LLM
-│   ├── retriever.py          # Code related to information retrieval (optional)
-│   ├── utils.py              # Utility functions for the RAG agent
-│   └── db_utils.py           # Database utility functions specific to RAG
-├── frontend/
+│   │   ├── routes.py         # API route handlers organized by Blueprints
+│   │   ├── model_utils.py    # SQL queries
+│   │   └── Dockerfile        # Dockerfile for Flask API service
+│   ├── llm/                  # llm stuff and code
+│   │   └── Dockerfile        # Dockerfile for Ollama service
+│   ├── ui/                   # ui code
+│   │   └── Dockerfile        # Dockerfile for React service
+│   └── db/                   # Database
+│       ├── db.py             # db calls
+│       ├── Dockerfile        # Dockerfile for Postgres service
+│       ├── Dockerfile        # API route handlers organized by Blueprints
+│       └── data/             # Directory for local data and datasets
+│           ├── Chunks/       # Directory for generated embeddings
+│           ├── generator.py  # Creating embeddings from data file
+│           ├── ingest.py     # Script for inputing data from Chunks/ into db
+│           └── README.md     # Instructions for data placement
+├── build/                    # Directory for ui build
 │   └── ...                   # React application source code
+├── docker-compose.yml        # Compose file to orchestrate services
 ├── requirements.txt          # Python dependencies
 ├── README.md                 # Project overview, setup instructions, etc.
 └── .gitignore                # Files and directories to ignore in version control
@@ -41,7 +41,7 @@ agentic-rag-project/
 # Step 1: Run the data generation script
 
 Run data generator script...
-```python3 ./data/generator.py```
+```python3 ./src/db/data/generator.py```
 
 # Step 2: Bring up Docker containers
 
@@ -51,5 +51,5 @@ Start Docker containerization
 # Step 3: Run the data ingestion script
 
 Ingest JSON into Postgres container
-```python3 ./data/ingest.py```
+```python3 ./src/db/data/ingest.py```
 
