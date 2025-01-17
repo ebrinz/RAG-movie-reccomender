@@ -13,15 +13,21 @@ agentic-rag-project/
 │   │   ├── model_utils.py    # SQL queries
 │   │   └── Dockerfile        # Dockerfile for Flask API service
 │   ├── llm/                  # llm stuff and code
-│   │   └── Dockerfile        # Dockerfile for Ollama service
+│   │   └── Dockerfile        # Dockerfile for Ollama service  TODO: Get Ollama running Llama3 without manually starting
 │   ├── ui/                   # ui code
+│   │   └──  public/          #
+│   │   │    └── index.html   #
+│   │   ├── src/              #
+│   │   │   ├── index.js      #
+│   │   │   ├── App.js        #
+│   │   │   └── api.js        #
+│   │   ├── package.json      #
+│   │   └── package-lock.json #
 │   │   └── Dockerfile        # Dockerfile for React service
 │   └── db/                   # Database
-│       ├── db.py             # db calls
 │       ├── Dockerfile        # Dockerfile for Postgres service
-│       ├── Dockerfile        # API route handlers organized by Blueprints
 │       └── data/             # Directory for local data and datasets
-│           ├── Chunks/       # Directory for generated embeddings
+│           ├── chunks/       # Directory for generated embeddings
 │           ├── generator.py  # Creating embeddings from data file
 │           ├── ingest.py     # Script for inputing data from Chunks/ into db
 │           └── README.md     # Instructions for data placement

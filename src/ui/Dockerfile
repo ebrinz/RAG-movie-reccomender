@@ -2,17 +2,17 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-# Copy only package.json and package-lock.json first to leverage Docker caching
+# Copy package.json and package-lock.json
 COPY src/ui/package.json src/ui/package-lock.json ./
 
+# Install dependencies, including dev dependencies
 RUN npm install
 
-# Copy the rest of the frontend source code, including public and src
+# Copy the entire project
 COPY src/ui ./
 
-# Build the React app
-RUN npm run build
-
+# Expose the React app development server port
 EXPOSE 3000
 
-CMD ["npm", "start"]
+# Use Nodemon in development mode
+CMD ["npm", "run", "start:dev"]
