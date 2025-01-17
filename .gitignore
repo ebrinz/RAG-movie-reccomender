@@ -1,6 +1,6 @@
-data/chunks/
 **/__pycache__/
 *json
 *csv
 
 src/ui/node_modules/
+src/db/data/chunks/
