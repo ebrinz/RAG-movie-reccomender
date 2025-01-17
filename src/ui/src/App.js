@@ -2,25 +2,64 @@ import React, { useState } from "react";
 import { sendPrompt } from "./api";
 
 const App = () => {
-  const [prompt, setPrompt] = useState(""); // Stores user input
-  const [responses, setResponses] = useState([]); // Stores API responses
-  const [loading, setLoading] = useState(false); // Indicates API request in progress
-
-  const handleSubmit = async () => {
-    if (!prompt) return;
-    setLoading(true);
-
-    try {
-      const response = await sendPrompt(prompt); // Call API
-      setResponses((prev) => [...prev, { prompt, response }]); // Update responses
-      setPrompt(""); // Clear the input
-    } catch (error) {
-      console.error("Error fetching RAG response:", error);
-      alert("Failed to fetch response. Check the console for details.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const [prompt, setPrompt] = useState("");
+    const [responses, setResponses] = useState([]);
+    const [loading, setLoading] = useState(false);
+  
+    const handleSubmit = async () => {
+      if (!prompt) return;
+      setLoading(true);
+  
+      const currentPrompt = prompt;
+      setPrompt(""); // Clear input field
+  
+      let currentResponse = "";
+      let buffer = "";  // Buffer to accumulate partial data
+  
+      // Add a placeholder for the new response
+      setResponses(prev => [...prev, { prompt: currentPrompt, response: "" }]);
+  
+      try {
+        await sendPrompt(currentPrompt, (chunk) => {
+          // Append the new chunk to the buffer
+          buffer += chunk;
+  
+          // Split the buffer by newline characters
+          let lines = buffer.split("\n");
+          // Keep the last partial line in the buffer
+          buffer = lines.pop();
+  
+          // Process each complete line
+          for (let line of lines) {
+            if (!line.trim()) continue;  // Skip empty lines
+            try {
+              const parsed = JSON.parse(line);
+              // Extract only the "response" field
+              if (parsed.response) {
+                currentResponse += parsed.response;
+  
+                // Update the last response entry reactively
+                setResponses(prev => {
+                  const updatedResponses = [...prev];
+                  updatedResponses[updatedResponses.length - 1] = {
+                    prompt: currentPrompt,
+                    response: currentResponse
+                  };
+                  return updatedResponses;
+                });
+              }
+            } catch (e) {
+              console.error("JSON parse error:", e, "Line:", line);
+            }
+          }
+        });
+      } catch (error) {
+        console.error("Error fetching RAG response:", error);
+        alert("Failed to fetch response. Check the console for details.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
@@ -51,7 +90,6 @@ const App = () => {
         </button>
       </div>
       <div>
-        <h2>terd!</h2>
         <h2>Responses</h2>
         {responses.length === 0 && <p>No responses yet.</p>}
         {responses.map((entry, index) => (
@@ -65,7 +103,10 @@ const App = () => {
             }}
           >
             <p><strong>Prompt:</strong> {entry.prompt}</p>
-            <p><strong>Response:</strong> {entry.response}</p>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
+              <strong>Response:</strong> {entry.response}
+            </div>
+
           </div>
         ))}
       </div>
@@ -74,3 +115,4 @@ const App = () => {
 };
 
 export default App;
+
