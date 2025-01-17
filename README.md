@@ -1,42 +1,56 @@
 # ragtime-2-agentic
 
 ```
+######################################################################################
+#                              Project Structure                                     #
+######################################################################################
+
 agentic-rag-project/
 │
-├── src/                      # Source code for the RAG system
-│   ├── api/                  # Flask server code
-│   │   ├── __init__.py       # Initialize Flask app and extensions
-│   │   ├── requirements.txt  # TODO: set requirements seperately for each container
-│   │   ├── main.py           # Entry point for the Flask API
-│   │   ├── db.py             # db calls
-│   │   ├── routes.py         # API route handlers organized by Blueprints
-│   │   ├── model_utils.py    # SQL queries
-│   │   └── Dockerfile        # Dockerfile for Flask API service
-│   ├── llm/                  # llm stuff and code
-│   │   └── Dockerfile        # TODO: Get Ollama running Llama3 without manually starting
-│   ├── ui/                   # ui code
-│   │   └──  public/          #
-│   │   │    └── index.html   #
-│   │   ├── src/              #
-│   │   │   ├── index.js      #
-│   │   │   ├── App.js        #
-│   │   │   └── api.js        #
-│   │   ├── package.json      #
-│   │   └── package-lock.json #
-│   │   └── Dockerfile        # Dockerfile for React service
-│   └── db/                   # Database
-│       ├── Dockerfile        # Dockerfile for Postgres service
-│       └── data/             # Directory for local data and datasets
-│           ├── chunks/       # Directory for generated embeddings
-│           ├── generator.py  # Creating embeddings from data file
-│           ├── ingest.py     # Script for inputing data from Chunks/ into db
-│           └── README.md     # Instructions for data placement
-├── build/                    # Directory for ui build
-│   └── ...                   # React application source code
-├── docker-compose.yml        # Compose file to orchestrate services
-├── requirements.txt          # Python dependencies
-├── README.md                 # Project overview, setup instructions, etc.
-└── .gitignore                # Files and directories to ignore in version control
+├── src/                      
+│   ├── api/                           # Flask server code
+│   │   ├── __init__.py                # Initialize Flask app and extensions
+│   │   ├── requirements.txt           # Dependencies for Flask server
+│   │   ├── main.py                    # Entry point for the Flask API
+│   │   ├── db.py                      # Database calls
+│   │   ├── routes.py                  # API route handlers organized by Blueprints
+│   │   ├── model_utils.py             # Utilities for SQL queries and model management
+│   │   └── Dockerfile                 # Dockerfile for Flask API service
+│   ├── llm/                           # LLM-related code and configurations
+│   │   └── Dockerfile                 # Dockerfile for LLM service
+│   ├── ui/                            # Frontend UI code
+│   │   ├── public/                    #         
+│   │   │   └── index.html             # HTML template
+│   │   ├── src/                       #         
+│   │   │   ├── components/            # 
+│   │   │   │   ├── App.js             # Main App component
+│   │   │   │   ├── PromptInput.js     # Component for prompt input
+│   │   │   │   ├── ResponseList.js    # Component for displaying responses
+│   │   │   │   └── SimilarMovies.js   # Component for displaying similar movies
+│   │   │   ├── api.js                 # API utility functions for UI
+│   │   │   ├── helpers/               # Helper functions and custom hooks
+│   │   │   │   └── handleSubmit.js    # Logic for handling submissions
+│   │   │   ├── styles/                # Stylesheets
+│   │   │   │   └── index.css          # Main CSS file
+│   │   │   └── index.js               # Entry point for React application
+│   │   ├── package.json               #
+│   │   ├── package-lock.json          #
+│   │   └── Dockerfile                 # Dockerfile for React service
+│   └── db/                            # Database-related scripts and configurations
+│       ├── Dockerfile                 # Dockerfile for Postgres service
+│       └── data/                      # Directory for local data and datasets
+│           ├── chunks/                # Directory for generated embeddings
+│           ├── generator.py           # Script for creating embeddings from data
+│           ├── ingest.py              # Script for inputting data from chunks into db
+│           └── README.md              # Instructions for data placement
+│                                      #
+├── build/                             # Directory for UI build output
+│   └── ...                            # Compiled React application files
+├── docker-compose.yml                 # Compose file to orchestrate services
+├── requirements.txt                   # Global Python dependencies for the project
+├── README.md                          # Project overview, setup instructions, etc.
+└── .gitignore                         # Files and directories to ignore in version control
+
 ```
 
 
@@ -58,19 +72,3 @@ Start Docker containerization
 
 Ingest JSON into Postgres container
 ```python3 ./src/db/data/ingest.py```
-
-
-
-src/
-├── components/
-│   ├── App.js
-│   ├── PromptInput.js
-│   ├── ResponseList.js
-│   └── SimilarMovies.js
-├── api/
-│   └── index.js        (formerly api.js, or keep as api.js here)
-├── helpers/
-│   └── handleSubmit.js (if separated later)
-├── styles/
-│   └── index.css       (or keep index.css at root if preferred)
-├── index.js
