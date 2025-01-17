@@ -53,22 +53,31 @@ agentic-rag-project/
 
 ```
 
+## GETTING STARTED
 
-# Step 0: "Installing dependencies..."
+##### Step 0: "Installing dependencies..."
 
 ```pip install -r requirements.txt```
 
-# Step 1: Run the data generation script
+##### Step 1: Run the data generation script
 
 Run data generator script...
 ```python3 ./src/db/data/generator.py```
 
-# Step 2: Bring up Docker containers
+##### Step 2: Bring up Docker containers
 
 Start Docker containerization
 ```docker-compose up -d```
 
-# Step 3: Run the data ingestion script
+##### Step 3: Run the data ingestion script
 
 Ingest JSON into Postgres container
 ```python3 ./src/db/data/ingest.py```
+
+
+## TODOS
+- [ ] Fix loading CSS
+- [ ] Eliminate console warning
+- [ ] Adjust system prompt for answering prompt with only plot summary
+- [ ] Agentically add content to movie suggestions
+- [ ] Add filters to response data (country of origin, release year limiting)
