@@ -13,7 +13,7 @@ agentic-rag-project/
 │   │   ├── model_utils.py    # SQL queries
 │   │   └── Dockerfile        # Dockerfile for Flask API service
 │   ├── llm/                  # llm stuff and code
-│   │   └── Dockerfile        # Dockerfile for Ollama service  TODO: Get Ollama running Llama3 without manually starting
+│   │   └── Dockerfile        # TODO: Get Ollama running Llama3 without manually starting
 │   ├── ui/                   # ui code
 │   │   └──  public/          #
 │   │   │    └── index.html   #

@@ -23,11 +23,6 @@ def fetch_movies(limit=10, title_filter=""):
     conn = get_db_connection()
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            # query = """
-            #     SELECT * FROM movies
-            #     WHERE title ILIKE %s
-            #     LIMIT %s;
-            # """
             query = """
                 SELECT * FROM movies
                 LIMIT 5;
@@ -44,7 +39,7 @@ def fetch_similar_movies(embedding, num_neighbors=5):
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             query = """
-                SELECT title, release_year, director, 
+                SELECT title, release_year, plot, director, origin_ethnicity,
                        embedding <-> %s AS similarity
                 FROM movies
                 ORDER BY similarity ASC

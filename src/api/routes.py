@@ -55,13 +55,17 @@ def generate_prompt():
 
         if not prompt:
             return jsonify({"error": "Prompt is required"}), 400
+        
+        system_prompt = "You are an expert movie script writer who crafts creative and engaging plots. \
+            Create a gripping film plot summary meant to pitch to a director. Be concise and reply with \
+            one plot summary logline only!"
 
         # Send the request to the LLM service with streaming enabled
         response = requests.post(
             "http://llm:11434/api/generate",
             json={
                 "model": "llama3",
-                "prompt": prompt,
+                "prompt": f"{system_prompt}\n{prompt}",
                 "options": {"num_ctx": num_ctx}
             },
             headers={"Content-Type": "application/json"},

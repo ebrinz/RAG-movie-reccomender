@@ -19,3 +19,5 @@ orjson==3.9.7
 
 # Optional: Any other tools you might be using
 gunicorn==20.1.0  # For deploying Flask in production (optional)
+
+# langchain==0.3.14
