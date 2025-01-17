@@ -1,18 +1,13 @@
-import React, { useState } from "react";
-import { sendPrompt, fetchSimilarMovies } from "./api";
-import PromptInput from "./PromptInput";
-import ResponseList from "./ResponseList";
-import SimilarMovies from "./SimilarMovies";
+import { useState } from "react";
+import { sendPrompt, fetchSimilarMovies } from "../api/api";
 
-import "./index.css";
-
-const App = () => {
-    const [prompt, setPrompt] = useState("");
-    const [responses, setResponses] = useState([]);
+const useSubmitHandler = () => {
     const [loading, setLoading] = useState(false);
+    const [responses, setResponses] = useState([]);
     const [similarMovies, setSimilarMovies] = useState([]);
 
     const [loadingSimilarMovies, setLoadingSimilarMovies] = useState(false); // testing
+
 
     const handleSubmit = async () => {
         if (!prompt) return;
@@ -20,16 +15,11 @@ const App = () => {
         setLoadingSimilarMovies(false);
 
         const currentPrompt = prompt;
-        setPrompt("");
         setSimilarMovies([]);
 
         let currentResponse = "";
         let buffer = "";
 
-        // setResponses((prev) => [
-        //     ...prev,
-        //     { prompt: currentPrompt, response: "" }
-        // ]);
         setResponses(() => [
             { prompt: currentPrompt, response: "" }
         ]);
@@ -75,29 +65,16 @@ const App = () => {
         } finally {
             setLoading(false);
         }
+
     };
 
-    return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h1>Movie Recco</h1>
-            <PromptInput
-                prompt={prompt}
-                setPrompt={setPrompt}
-                handleSubmit={handleSubmit}
-                loading={loading}
-            />
-            <ResponseList responses={responses} />
-            
-            <div>
-                {loadingSimilarMovies ? (
-                    <div className="spinner"></div>
-                ) : (
-                    <SimilarMovies similarMovies={similarMovies} />
-                )}
-            </div>
-        </div>
-    );
-
+    return {
+        loading,
+        responses,
+        similarMovies,
+        handleSubmit
+    };
+    
 };
 
-export default App;
+export default useSubmitHandler;
