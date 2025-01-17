@@ -18,7 +18,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: src/flask_app/Dockerfile
+      dockerfile: src/api/Dockerfile
     restart: always
     environment:
       - FLASK_ENV=development
