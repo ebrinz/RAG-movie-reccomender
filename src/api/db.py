@@ -39,7 +39,7 @@ def fetch_similar_movies(embedding, num_neighbors=5):
     try:
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             query = """
-                SELECT title, release_year, plot, director, origin_ethnicity,
+                SELECT title, release_year, plot_summary, director, origin_ethnicity,
                        embedding <-> %s AS similarity
                 FROM movies
                 ORDER BY similarity ASC

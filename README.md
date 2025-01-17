@@ -59,3 +59,18 @@ Start Docker containerization
 Ingest JSON into Postgres container
 ```python3 ./src/db/data/ingest.py```
 
+
+
+src/
+├── components/
+│   ├── App.js
+│   ├── PromptInput.js
+│   ├── ResponseList.js
+│   └── SimilarMovies.js
+├── api/
+│   └── index.js        (formerly api.js, or keep as api.js here)
+├── helpers/
+│   └── handleSubmit.js (if separated later)
+├── styles/
+│   └── index.css       (or keep index.css at root if preferred)
+├── index.js
