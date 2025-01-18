@@ -34,8 +34,8 @@ const useSubmitHandler = () => {
                     if (!line.trim()) continue;
                     try {
                         const parsed = JSON.parse(line);
-                        if (parsed.response) {
-                            currentResponse += parsed.response;
+                        if (parsed.message) {
+                            currentResponse += parsed.message.content;
                             setResponses((prev) => {
                                 const updatedResponses = [...prev];
                                 updatedResponses[updatedResponses.length - 1] = {

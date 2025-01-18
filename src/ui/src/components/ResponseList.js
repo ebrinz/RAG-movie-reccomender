@@ -13,9 +13,10 @@ const ResponseList = ({ responses }) => {
                         padding: "10px",
                     }}
                 >
-                    <p>{entry.prompt}</p>
+                    {console.log('sdfsdfsd', entry)}
+                    {/* <p>{entry.prompt}</p> */}
                     <div style={{ whiteSpace: "pre-wrap" }}>
-                        {entry.response}
+                        {entry.response || ""}
                         {index === responses.length - 1 && (
                             <span className="blinking-cursor" style={{ fontSize: "1em" }}></span>
                         )}

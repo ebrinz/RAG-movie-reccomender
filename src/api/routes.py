@@ -51,7 +51,7 @@ def generate_prompt():
         # Extract prompt data from the request
         data = request.json
         prompt = data.get('prompt', "Why is the sky blue?")
-        num_ctx = data.get('num_ctx', 2048)
+        num_ctx = data.get('num_ctx', 512)
 
         if not prompt:
             return jsonify({"error": "Prompt is required"}), 400
@@ -62,15 +62,37 @@ def generate_prompt():
 
         # Send the request to the LLM service with streaming enabled
         response = requests.post(
-            "http://llm:11434/api/generate",
+            "http://llm:11434/api/chat",  # Use /api/chat instead of /api/generate
             json={
                 "model": "llama3",
-                "prompt": f"{system_prompt}\n{prompt}",
-                "options": {"num_ctx": num_ctx}
+                "messages": [
+                    {
+                        "role": "system",
+                        "content": (
+                            "The system is a movie producer who crafts creative and engaging plots. "
+                            "The system creates a plot summary meant to pitch to a director. The system uses the "
+                            "terms provided by the user to create a plot summary in 25 tokens or less. "
+                            "No intro, just plain summary of the plot."
+                        )
+                    },
+                    {
+                        "role": "user",
+                        "content": f"{prompt}"
+                    }
+                ],
+                "options": {
+                    "num_ctx": 1024,  # Adjusted to model's max context size
+                    "temperature": 1.2,
+                    "num_predict": 25,  # 25 tokens to match "25 tokens or less" requirement
+                    "top_k": 80,
+                    "top_p": 0.9,
+                    "min_p": 0.7
+                }
             },
             headers={"Content-Type": "application/json"},
-            stream=True  # Enable streaming
+            stream=True  # If supported
         )
+
 
         if response.status_code != 200:
             return jsonify({"error": f"LLM service returned an error: {response.text}"}), response.status_code
