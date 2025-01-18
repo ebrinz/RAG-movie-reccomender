@@ -53,7 +53,6 @@ export const fetchSimilarMovies = async (text, num_neighbors = 5) => {
         if (!vectorResponse.ok) {
             throw new Error(`Vector search API error: ${vectorResponse.statusText}`);
         }
-        console.log('dafuq!')
         return await vectorResponse.json();
     } catch (error) {
         console.error("Error in fetchSimilarMovies:", error);

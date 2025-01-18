@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import PromptInput from "./PromptInput";
 import ResponseList from "./ResponseList";
 import SimilarMovies from "./SimilarMovies";
+import EllipsisLoader from "./EllipsisLoader"
 
 import useSubmitHandler from "../helpers/useSubmitHandler";
 
-import "../styles/index.css";
+import "../styles/terminal.css";
 
 const App = () => {   
     const [prompt, setPrompt] = useState("");
@@ -19,8 +20,11 @@ const App = () => {
     };
 
     return (
-        <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
-            <h1>Movie Recco</h1>
+        <div className="terminal">
+            <div>
+                {/* animated banner here  */}
+                <h1>Movie Recco</h1>
+            </div>
             <PromptInput
                 prompt={prompt}
                 setPrompt={setPrompt}
@@ -30,8 +34,9 @@ const App = () => {
             <ResponseList responses={responses} />
             
             <div>
-                {loadingSimilarMovies ? (
-                    <div className="spinner"></div>
+                {loadingSimilarMovies ? 
+                (
+                    <EllipsisLoader />
                 ) : (
                     <SimilarMovies similarMovies={similarMovies} />
                 )}

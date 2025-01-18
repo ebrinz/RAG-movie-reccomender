@@ -1,0 +1,51 @@
+.ellipsis-loader {
+    display: inline-flex;
+    position: relative;
+    width: 80px; /* Total width of loader */
+    height: 13px; /* Height of loader dots */
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ellipsis-loader div {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: #fff; /* Default white color */
+    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.ellipsis-loader div:nth-child(1) {
+    animation: ellipsis1 0.6s infinite;
+    background: #fff; /* Bright white */
+}
+
+.ellipsis-loader div:nth-child(2) {
+    animation: ellipsis2 0.6s infinite;
+    background: #f0f0f0; /* Slightly off-white */
+}
+
+.ellipsis-loader div:nth-child(3) {
+    animation: ellipsis2 0.6s infinite;
+    background: #e0e0e0; /* Light gray */
+}
+
+.ellipsis-loader div:nth-child(4) {
+    animation: ellipsis3 0.6s infinite;
+    background: #d0d0d0; /* Even lighter gray */
+}
+
+@keyframes ellipsis1 {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+@keyframes ellipsis2 {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(24px, 0); }
+}
+
+@keyframes ellipsis3 {
+    0% { transform: scale(1); }
+    100% { transform: scale(0); }
+}

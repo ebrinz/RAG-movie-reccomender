@@ -42,6 +42,8 @@ def fetch_similar_movies(embedding, num_neighbors=5):
                 SELECT title, release_year, plot_summary, director, origin_ethnicity,
                        embedding <-> %s AS similarity
                 FROM movies
+                WHERE origin_ethnicity = 'American'
+                AND release_year >= 1960
                 ORDER BY similarity ASC
                 LIMIT %s;
             """

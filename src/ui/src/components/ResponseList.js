@@ -1,9 +1,9 @@
 import React from "react";
+import "../styles/terminal.css";
 
 const ResponseList = ({ responses }) => {
     return (
         <div>
-            {/* <h2>Responses</h2> */}
             {responses.length === 0 && ""}
             {responses.map((entry, index) => (
                 <div
@@ -11,13 +11,14 @@ const ResponseList = ({ responses }) => {
                     style={{
                         marginBottom: "20px",
                         padding: "10px",
-                        border: "1px solid #ddd",
-                        borderRadius: "4px",
                     }}
                 >
-                    <p><strong>Prompt:</strong> {entry.prompt}</p>
+                    <p>{entry.prompt}</p>
                     <div style={{ whiteSpace: "pre-wrap" }}>
-                        <strong>Response:</strong> {entry.response}
+                        {entry.response}
+                        {index === responses.length - 1 && (
+                            <span className="blinking-cursor" style={{ fontSize: "1em" }}></span>
+                        )}
                     </div>
                 </div>
             ))}

@@ -40,7 +40,7 @@ def vector_search():
 
         embedding = get_embedding(text)
         results = fetch_similar_movies(embedding, num_neighbors)
-        return jsonify({"results": results})
+        return jsonify({"results": results, "query": text})
     except Exception as e:
         return jsonify({"error": f"An error occurred: {e}"}), 500
 
@@ -56,9 +56,9 @@ def generate_prompt():
         if not prompt:
             return jsonify({"error": "Prompt is required"}), 400
         
-        system_prompt = "You are an expert movie script writer who crafts creative and engaging plots. \
-            Create a gripping film plot summary meant to pitch to a director. Be concise and reply with \
-            one plot summary logline only!"
+        system_prompt = "The system is a movie producer who crafts creative and engaging plots. \
+            the system crates a plot summary meant to pitch to a director. The system uses the \
+            terms provided by the user to create a plot summary in 25 tokens or less"
 
         # Send the request to the LLM service with streaming enabled
         response = requests.post(
@@ -75,7 +75,6 @@ def generate_prompt():
         if response.status_code != 200:
             return jsonify({"error": f"LLM service returned an error: {response.text}"}), response.status_code
 
-        # Stream the response back to the client
         def generate():
             for chunk in response.iter_content(chunk_size=1024):
                 if chunk:

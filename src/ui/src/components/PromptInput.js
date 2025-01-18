@@ -1,33 +1,29 @@
 import React from "react";
+import EllipsisLoader from "./EllipsisLoader"
+import '../styles/EllipsisLoader.css';
+import "../styles/terminal.css";
+
+{/* <div className="blinking-cursor" style={{fontSize: '2em'}}></div> */}
+
 
 const PromptInput = ({ prompt, setPrompt, handleSubmit, loading }) => {
     return (
-        <div style={{ marginBottom: "20px" }}>
+        <div className="terminal-container">
             <textarea
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Type your prompt here..."
                 rows="5"
-                style={{ width: "100%", padding: "10px", fontSize: "16px" }}
+                className="terminal-textarea"
             />
-            <button
-                onClick={handleSubmit}
-                disabled={loading}
-                style={{
-                    marginTop: "10px",
-                    padding: "10px 20px",
-                    fontSize: "16px",
-                    cursor: "pointer",
-                    background: loading ? "#ddd" : "#007BFF",
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                }}
-            >
-                {loading ? "Submitting..." : "Submit"}
-            </button>
+            <div className="terminal-button" disabled={loading} onClick={handleSubmit}>
+                {loading ? <EllipsisLoader /> : "Submit"}
+            </div>
         </div>
     );
 };
 
 export default PromptInput;
+
+
+

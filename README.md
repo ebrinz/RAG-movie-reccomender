@@ -81,3 +81,4 @@ Ingest JSON into Postgres container
 - [ ] Adjust system prompt for answering prompt with only plot summary
 - [ ] Agentically add content to movie suggestions
 - [ ] Add filters to response data (country of origin, release year limiting)
+- [ ] Get llama to install automatically inside the Ollama container
