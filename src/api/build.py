@@ -42,7 +42,7 @@ def generate(tokenizer, model, device):
     movie_df["PlotSummary"] = movie_df["PlotSummary"].astype(str)
 
     ####### FOR TEST ONLY!!!!######
-    movie_df = movie_df.head(50)
+    # movie_df = movie_df.head(50)
     ###############################
 
     chunk_size = 1000
