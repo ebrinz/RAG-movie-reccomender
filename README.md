@@ -1,29 +1,30 @@
-```
 
-## GETTING STARTED
 
-##### Step 1: Bring up Docker containers
-Adjust .env for embedding chosen model and embedding model's output vector size
+# GETTING STARTED
 
-##### Step 2: Bring up Docker containers
-Make sure the following are present on host machine
+### Step 1: Bring up Docker containers
+##### Adjust .env for embedding chosen model and embedding model's output vector size
+
+### Step 2: Bring up Docker containers
+##### Make sure the following are present on host machine
 ```
 docker.io or Docker Desktop app
 docker-compose
 Ansible
 ```
 
-##### Step 3: Bring up Docker containers
-Start Docker containerization
+### Step 3: Bring up Docker containers
+##### Start Docker containerization
 ```ansible-playbook playbook.yml```
 
 
-##### Step 4: Load page
-Served on browser at
+### Step 4: Load page
+##### Served on browser at
 ```http://localhost:3000/```
 
 
-#### Sitemap
+## Sitemap
+```
 │
 ├── README.md
 ├── build
