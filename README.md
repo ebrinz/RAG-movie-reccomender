@@ -2,7 +2,7 @@
 
 # GETTING STARTED
 
-## Step 1: Environment
+## 1: Environment
 ##### Make sure the following are present on host machine
 ```
 docker.io or Docker Desktop app
@@ -10,16 +10,16 @@ docker-compose
 Ansible
 ```
 
-## Step 2: Parameters
+## 2: Parameters
 ##### Adjust .env for embedding chosen model and embedding model's output vector size
 
 
-## Step 3: Bring up Docker containers
+## 3: Bring up Docker containers
 ##### Start Docker containerization
 ```ansible-playbook playbook.yml```
 
 
-## Step 4: Load page
+## 4: Load page
 ##### Served on browser at
 ```http://localhost:3000/```
 
