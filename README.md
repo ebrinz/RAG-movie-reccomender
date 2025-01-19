@@ -73,6 +73,12 @@ Start Docker containerization
 ```ansible-playbook playbook.yml```
 
 
+##### Step 4: Load page
+Served on browser at
+```http://localhost:3000/```
+
+
+
 ## TODOS
 - [ ] Move Reqs into api
 - [ ] Eliminate console warning
