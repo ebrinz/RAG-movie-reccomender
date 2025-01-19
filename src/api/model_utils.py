@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 import torch
+import argparse
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, ModernBertModel, ModernBertConfig
 
 
@@ -29,7 +30,14 @@ def get_embedding(text, tokenizer, model, device):
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate embeddings for a given text.")
+    parser.add_argument(
+        "--text",
+        type=str,
+        required=True,
+        help="The text for which to generate an embedding."
+    )
+    args = parser.parse_args()
     tokenizer, model, device = load_model()
-    text = "The wheel in the sky keeps on turning."
-    embedding = get_embedding(text, tokenizer, model, device)
+    embedding = get_embedding(args.text, tokenizer, model, device)
     print("Generated embedding:", embedding)

@@ -28,18 +28,18 @@ RUN pip install torch --upgrade
 COPY src/ /app/src
 RUN mkdir -p /app/data/chunks
 
-# Receive build arguments
-ARG EMBEDDING_MODEL
-ARG VECTOR_DIM
-ARG DATABASE_URL
+# # Receive build arguments
+# ARG EMBEDDING_MODEL
+# ARG VECTOR_DIM
+# ARG DATABASE_URL
 
-ENV EMBEDDING_MODEL=${EMBEDDING_MODEL}
-ENV VECTOR_DIM=${VECTOR_DIM}
-ENV DATABASE_URL=${DATABASE_URL}
+# ENV EMBEDDING_MODEL=${EMBEDDING_MODEL}
+# ENV VECTOR_DIM=${VECTOR_DIM}
+# ENV DATABASE_URL=${DATABASE_URL}
 
-RUN echo $EMBEDDING_MODEL
+# RUN echo $EMBEDDING_MODEL
 
-RUN python /app/src/api/build.py
+# RUN python /app/src/api/build.py
 
 # Set PYTHONPATH to include /app
 ENV PYTHONPATH=/app/src

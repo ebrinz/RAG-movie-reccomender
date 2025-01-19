@@ -49,25 +49,25 @@ def generate(tokenizer, model, device):
     num_chunks = len(movie_df) // chunk_size + int(len(movie_df) % chunk_size > 0)
     chunks = [movie_df.iloc[i * chunk_size:(i + 1) * chunk_size] for i in range(num_chunks)]
 
+    # Ensure the output directory exists
+    output_dir = "/app/data/chunks"
+    os.makedirs(output_dir, exist_ok=True)
+
     with ThreadPoolExecutor(max_workers=10) as executor:
         futures = []
         for idx, chunk in enumerate(chunks):
-            output_file = f"./data/chunks/movie_embeddings_chunk_{idx + 1}.json"
+            output_file = os.path.join(output_dir, f"movie_embeddings_chunk_{idx + 1}.json")
             if not is_chunk_complete(output_file, len(chunk)):
+                print(f"Processing chunk {idx + 1}...")
                 futures.append(executor.submit(process_chunk, chunk, output_file, tokenizer, model, device))
+            else:
+                print(f"Chunk {idx + 1} already processed and saved. Skipping...")
+
         for future in tqdm(futures, desc="Processing Chunks"):
             future.result()
 
 
 if __name__ == "__main__":
     tokenizer, model, device = load_model()
-    print("Getting data.")
+    print("Getting data...")
     generate(tokenizer, model, device)
-
-
-
-
-
-
-
-    

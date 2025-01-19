@@ -1,4 +1,6 @@
 
+name: movie-recco
+
 services:
 
   db:
@@ -43,6 +45,7 @@ services:
       - db
     volumes:
       - ./src:/app/src
+      - ./data:/app/data
       - ~/.cache/huggingface:/root/.cache/huggingface
 
   llm:
