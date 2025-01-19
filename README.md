@@ -5,80 +5,82 @@
 #                              Project Structure                                     #
 ######################################################################################
 
-agentic-rag-project/
-│
-├── src/                      
-│   ├── api/                           # Flask server code
-│   │   ├── __init__.py                # Initialize Flask app and extensions
-│   │   ├── requirements.txt           # Dependencies for Flask server
-│   │   ├── main.py                    # Entry point for the Flask API
-│   │   ├── db.py                      # Database calls
-│   │   ├── routes.py                  # API route handlers organized by Blueprints
-│   │   ├── model_utils.py             # Utilities for SQL queries and model management
-│   │   └── Dockerfile                 # Dockerfile for Flask API service
-│   ├── llm/                           # LLM-related code and configurations
-│   │   └── Dockerfile                 # Dockerfile for LLM service
-│   ├── ui/                            # Frontend UI code
-│   │   ├── public/                    #         
-│   │   │   └── index.html             # HTML template
-│   │   ├── src/                       #         
-│   │   │   ├── components/            # 
-│   │   │   │   ├── App.js             # Main App component
-│   │   │   │   ├── PromptInput.js     # Component for prompt input
-│   │   │   │   ├── ResponseList.js    # Component for displaying responses
-│   │   │   │   └── SimilarMovies.js   # Component for displaying similar movies
-│   │   │   ├── api.js                 # API utility functions for UI
-│   │   │   ├── helpers/               # Helper functions and custom hooks
-│   │   │   │   └── handleSubmit.js    # Logic for handling submissions
-│   │   │   ├── styles/                # Stylesheets
-│   │   │   │   └── index.css          # Main CSS file
-│   │   │   └── index.js               # Entry point for React application
-│   │   ├── package.json               #
-│   │   ├── package-lock.json          #
-│   │   └── Dockerfile                 # Dockerfile for React service
-│   └── db/                            # Database-related scripts and configurations
-│       ├── Dockerfile                 # Dockerfile for Postgres service
-│       └── data/                      # Directory for local data and datasets
-│           ├── chunks/                # Directory for generated embeddings
-│           ├── generator.py           # Script for creating embeddings from data
-│           ├── ingest.py              # Script for inputting data from chunks into db
-│           └── README.md              # Instructions for data placement
-│                                      #
-├── build/                             # Directory for UI build output
-│   └── ...                            # Compiled React application files
-├── docker-compose.yml                 # Compose file to orchestrate services
-├── requirements.txt                   # Global Python dependencies for the project
-├── README.md                          # Project overview, setup instructions, etc.
-└── .gitignore                         # Files and directories to ignore in version control
+├── README.md
+├── build
+├── docker-compose.yml
+├── playbook.yml
+├── requirements.txt
+└── src
+    ├── api
+    │   ├── Dockerfile
+    │   ├── README.md
+    │   ├── __init__.py
+    │   ├── build.py
+    │   ├── db.py
+    │   ├── ingest.py
+    │   ├── main.py
+    │   ├── model_utils.py
+    │   ├── requirements.txt
+    │   └── routes.py
+    ├── db
+    │   ├── Dockerfile
+    │   └── data
+    │       ├── README.md
+    │       ├── generator.py
+    │       ├── ingest.py
+    │       └── movie_embeddings.json
+    ├── llm
+    │   ├── Dockerfile
+    │   └── README.md
+    └── ui
+        ├── Dockerfile
+        ├── README.md
+        ├── nodemon.json
+        ├── package-lock.json
+        ├── package.json
+        ├── public
+        │   └── index.html
+        └── src
+            ├── api
+            │   └── api.js
+            ├── components
+            │   ├── App.js
+            │   ├── EllipsisLoader.js
+            │   ├── PromptInput.js
+            │   ├── ResponseList.js
+            │   ├── SimilarMovies.js
+            │   └── TopBilling.js
+            ├── helpers
+            │   └── useSubmitHandler.js
+            ├── index.js
+            └── styles
+                ├── EllipsisLoader.css
+                ├── TopBilling.css
+                ├── index.css
+                └── terminal.css
 
 ```
 
 ## GETTING STARTED
 
-##### Step 0: "Installing dependencies..."
-
-```pip install -r requirements.txt```
-
-##### Step 1: Run the data generation script
-
-Run data generator script...
-```python3 ./src/db/data/generator.py```
+##### Step 1: Bring up Docker containers
+Adjust .env for embedding chosen model and embedding model's output vector size
 
 ##### Step 2: Bring up Docker containers
+Make sure the following are present on host machine
+```
+docker.io or Docker Desktop app
+docker-compose
+Ansible
+```
 
+##### Step 3: Bring up Docker containers
 Start Docker containerization
-```docker-compose up -d```
-
-##### Step 3: Run the data ingestion script
-
-Ingest JSON into Postgres container
-```python3 ./src/db/data/ingest.py```
+```ansible-playbook playbook.yml```
 
 
 ## TODOS
-- [ ] Fix loading CSS
+- [ ] Move Reqs into api
 - [ ] Eliminate console warning
-- [ ] Adjust system prompt for answering prompt with only plot summary
-- [ ] Agentically add content to movie suggestions
-- [ ] Add filters to response data (country of origin, release year limiting)
-- [ ] Get llama to install automatically inside the Ollama container
+- [ ] Remove db data files and dir - maybe leave dummy data
+
