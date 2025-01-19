@@ -87,7 +87,7 @@ docker-compose
 ##### Show logs and folllow of all containers
 ```make logs```
 
-# Start Docker Compose stack
+##### Stop Docker Compose stack
 ```make down```
 
 ##### Stop and clean up the Docker Compose stack
@@ -95,8 +95,10 @@ docker-compose
 
 
 ## 4: Load page
-##### Served on browser at
+##### Served for browser at
 ```http://localhost:3000/```
+or
+```make open```
 
 
 ## Sitemap
