@@ -1,0 +1,67 @@
+/* Container for TopBilling */
+.top-billing {
+    display: flex;
+    justify-content: center; /* Center content horizontally */
+    /* align-items: center; 
+    padding: 40px 20px;  */
+    background-color: #000; 
+    color: #0f0; /* Digital green for text */
+    font-family: 'Courier New', monospace; /* Retro font */
+}
+
+/* ASCII Banner Styling */
+.ascii-banner {
+    display: flex; /* Arrange items in a row */
+    flex-direction: row; /* Horizontal layout */
+    align-items: center; /* Center ASCII art vertically relative to the title */
+    justify-content: space-between; /* Space out the ASCII art and title */
+    width: 100%; /* Take full width of the container */
+    padding: 0 20px; /* Add some horizontal padding */
+}
+
+/* ASCII Art Styling */
+.ascii-art {
+    font-family: 'Courier New', monospace;
+    color: #ff7300; /* Retro orange color for ASCII art */
+    text-shadow: 
+        0 0 5px #b47a0f,
+        0 0 10px #e17407,
+        0 0 20px #ff5900,
+        0 0 40px #ff0000;
+    text-align: center;
+    animation: sway 4s infinite ease-in-out;
+    margin: 0;
+}
+
+/* Title Styling */
+.title {
+    font-family: 'Bungee', cursive; /* Blend of retro and movie styles */
+    font-size: 3em;
+    color: #0f0; /* Green for title */
+    text-shadow: 
+        0 0 5px #00ff00,
+        0 0 10px #00ff00,
+        0 0 20px #00ff00,
+        0 0 40px #00ff00;
+    text-align: center;
+    animation: rock 6s infinite ease-in-out;
+}
+
+/* ASCII Art Animation */
+@keyframes sway {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(2px);
+    }
+}
+
+@keyframes rock {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(3px);
+    }
+}

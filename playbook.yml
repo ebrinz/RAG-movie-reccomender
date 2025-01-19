@@ -1,0 +1,37 @@
+- name: Set up containerization with debug logs
+  hosts: localhost
+  tasks:
+    - name: Build and bring up Docker Compose
+      shell: |
+        docker-compose build
+        docker-compose up -d
+      register: compose_result
+
+    - name: Display Docker Compose output
+      debug:
+        msg: "{{ compose_result.stdout }}"
+
+    - name: Ingest data into the database
+      command:
+        argv:
+          - docker
+          - exec
+          - api
+          - python
+          - /app/src/api/ingest.py
+      register: ingest_result
+
+    - name: Display database ingestion output
+      debug:
+        var: ingest_result.stdout
+
+    - name: Initialize pull for llama3
+      shell: |
+        curl -X POST http://localhost:11434/api/pull \
+        -H "Content-Type: application/json" \
+        -d '{"model": "llama3"}'
+      register: pull_result
+
+    - name: Display model pull request output
+      debug:
+        var: pull_result.stdout

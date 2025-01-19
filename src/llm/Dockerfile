@@ -1,24 +1,15 @@
-FROM ollama/ollama
+# Base image
 
-WORKDIR /app
-
+FROM ollama/ollama:latest
 EXPOSE 11434
-
-# Create the start.sh script using RUN
-# RUN echo '#!/bin/bash\n\
-# ollama serve &\n\
-# until ollama status > /dev/null 2>&1; do\n\
-#     echo "Waiting for ollama service to start..."\n\
-#     sleep 2\n\
-# done\n\
-# ollama run llama3' > /app/start.sh
-
-RUN echo '#!/bin/bash\n\
-ollama serve &\n\
-ollama run llama3' > /app/start.sh
-
-# Make the script executable
+RUN mkdir -p /app
+RUN cat <<'EOF' > /app/start.sh
+#!/bin/bash
+ollama serve &
+sleep 5
+ollama pull llama3
+# Keep the Ollama server running in the foreground
+wait
+EOF
 RUN chmod +x /app/start.sh
-
-# Override the default entrypoint
 ENTRYPOINT ["/app/start.sh"]

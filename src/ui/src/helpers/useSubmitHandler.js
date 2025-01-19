@@ -9,12 +9,13 @@ const useSubmitHandler = () => {
     const [loadingSimilarMovies, setLoadingSimilarMovies] = useState(false); // testing
 
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (prompt) => {
         if (!prompt) return;
         setLoading(true);
         setLoadingSimilarMovies(false);
 
         const currentPrompt = prompt;
+        console.log(currentPrompt)
         setSimilarMovies([]);
 
         let currentResponse = "";

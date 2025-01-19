@@ -26,6 +26,9 @@ curl http://localhost:11434/api/generate -d '{
 }'
 ```
 
+curl http://localhost:11434/api/list
+
+
 
 
 # Step 1: Create a Dockerfile

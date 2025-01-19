@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import TopBilling from "./TopBilling"
 import PromptInput from "./PromptInput";
 import ResponseList from "./ResponseList";
 import SimilarMovies from "./SimilarMovies";
 import EllipsisLoader from "./EllipsisLoader"
+
 
 import useSubmitHandler from "../helpers/useSubmitHandler";
 
@@ -23,12 +25,12 @@ const App = () => {
         <div className="terminal">
             <div>
                 {/* animated banner here  */}
-                <h1>Movie Recco</h1>
+                <TopBilling />
             </div>
             <PromptInput
                 prompt={prompt}
                 setPrompt={setPrompt}
-                handleSubmit={handleSubmit}
+                handleSubmit={() => handleSubmit(prompt)}
                 loading={loading}
             />
             <ResponseList responses={responses} />

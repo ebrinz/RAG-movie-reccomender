@@ -2,9 +2,19 @@ from flask import Blueprint, jsonify, request, Response
 import requests  # For making HTTP requests to the LLM service
 import logging
 from db import fetch_movies, fetch_similar_movies
-from model_utils import get_embedding
+from model_utils import get_embedding, load_model
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.StreamHandler(),  # Logs to console
+        logging.FileHandler("app.log")  # Logs to a file
+    ]
+)
 
 api_bp = Blueprint('api', __name__, url_prefix='/')
+tokenizer, model, device = load_model()
 
 @api_bp.route('/debug', methods=['POST'])
 def debug_request():
@@ -38,7 +48,7 @@ def vector_search():
         if not text:
             return jsonify({"error": "Text is required"}), 400
 
-        embedding = get_embedding(text)
+        embedding = get_embedding(text, tokenizer, model, device)
         results = fetch_similar_movies(embedding, num_neighbors)
         return jsonify({"results": results, "query": text})
     except Exception as e:
@@ -50,7 +60,8 @@ def generate_prompt():
     try:
         # Extract prompt data from the request
         data = request.json
-        prompt = data.get('prompt', "Why is the sky blue?")
+        logging.info(f"data: {data}")
+        prompt = data.get('prompt', "too many puppies?")
         num_ctx = data.get('num_ctx', 512)
 
         if not prompt:
@@ -58,7 +69,7 @@ def generate_prompt():
         
         system_prompt = "The system is a movie producer who crafts creative and engaging plots. \
             the system crates a plot summary meant to pitch to a director. The system uses the \
-            terms provided by the user to create a plot summary in 25 tokens or less"
+            terms provided by the user to create a plot summary in 50 tokens or less"
 
         # Send the request to the LLM service with streaming enabled
         response = requests.post(
@@ -83,7 +94,7 @@ def generate_prompt():
                 "options": {
                     "num_ctx": 1024,  # Adjusted to model's max context size
                     "temperature": 1.2,
-                    "num_predict": 25,  # 25 tokens to match "25 tokens or less" requirement
+                    "num_predict": 255,  # 25 tokens to match "25 tokens or less" requirement
                     "top_k": 80,
                     "top_p": 0.9,
                     "min_p": 0.7
