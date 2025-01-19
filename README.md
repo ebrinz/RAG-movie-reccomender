@@ -93,6 +93,12 @@ docker-compose
 ##### Stop and clean up the Docker Compose stack
 ```make clean```
 
+##### Clear the Docker environment
+```make desolate```
+
+##### Offload chnuks into local storage and free up dir for new model embeddings
+```make room```
+
 
 ## 4: Load page
 ##### Served for browser at

@@ -7,10 +7,10 @@ DOCKER_NETWORK = my_network
 BROWSER_CMD = open
 ENV_FILE = .env
 
-.PHONY: all build up data ingest pull down clean logs
+.PHONY: all build up data ingest pull logs open down clean desolate
 
 # Default task
-all: build up data ingest pull
+all: build up data ingest pull open
 
 # Build Docker Compose stack
 build:
@@ -62,10 +62,41 @@ clean:
 	@docker volume ls --filter "name=${PROJECT_NAME}_" --format "{{.Name}}" | xargs -r docker volume rm || echo "No volumes to remove."
 	@echo "Cleaning up unused Docker resources..."
 
+# Blow all docker data out of the water
 desolate:
-	@echo "Pruning all dangling Docker images..."
-	@docker image prune -f || echo "No dangling images to remove."
-	@echo "Dangling image cleanup complete."
-	@echo "Cleaning up unused Docker resources..."
-	@docker system prune -f --volumes || echo "No resources to prune."
-	@echo "Cleanup complete."
+	@echo "Stopping all running containers..."
+	@docker stop $(docker ps -aq) || echo "No running containers to stop."
+	@echo "Removing all containers..."
+	@docker rm $(docker ps -aq) || echo "No containers to remove."
+	@echo "Removing all images..."
+	@docker rmi $(docker images -q) -f || echo "No images to remove."
+	@echo "Removing all volumes..."
+	@docker volume rm $(docker volume ls -q) || echo "No volumes to remove."
+	@echo "Removing all networks..."
+	@docker network rm $(docker network ls -q) || echo "No networks to remove."
+	@echo "Pruning all build cache..."
+	@docker builder prune -f || echo "No build cache to prune."
+	@echo "Pruning system resources..."
+	@docker system prune -a -f --volumes || echo "No resources to prune."
+	@echo "Checking for dangling Docker processes..."
+	@if ps aux | grep '[d]ockerd' >/dev/null; then \
+		echo "Warning: Docker daemon is still running processes."; \
+		echo "Killing dangling Docker processes..."; \
+		pkill -f 'dockerd' || echo "Failed to kill Docker daemon. You may need to stop it manually."; \
+	else \
+		echo "No dangling Docker processes found."; \
+	fi
+	@echo "All Docker resources have been blown away. Cleanup complete."
+
+# Offload data
+room:
+	@echo "Offloading chunk files to make room for another model..."
+	@export EMBEDDING_MODEL=$$(grep EMBEDDING_MODEL $(ENV_FILE) | cut -d '=' -f2); \
+	if [ -z "$$EMBEDDING_MODEL" ]; then \
+		echo "Error: EMBEDDING_MODEL is not set in the .env file."; \
+		exit 1; \
+	fi; \
+	ARTIFACT_DIR=./data/artifacts/$$EMBEDDING_MODEL; \
+	mkdir -p $$ARTIFACT_DIR; \
+	mv ./data/chunks/* $$ARTIFACT_DIR/ || echo "No files to move.";
+	@echo "Offload complete. Files moved to ./data/artifacts/$$EMBEDDING_MODEL."
