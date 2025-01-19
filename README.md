@@ -16,7 +16,7 @@ Ansible
 
 ## 3: Bring up Docker containers
 ##### Start Docker containerization
-```ansible-playbook playbook.yml```
+```ansible-playbook playbook.yml -vvv```
 
 
 ## 4: Load page
