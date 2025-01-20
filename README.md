@@ -3,20 +3,7 @@
 This project explores Retrieval-Augmented Generation (RAG), an common technique that combines retrieval-based and generative AI systems. The primary focus is to experiment with RAG's ability to generate accurate, contextually rich responses by leveraging both embedding models and generative architectures. In this case, the domain of movies is used, with a dataset of film plots serving as the knowledge base.
 
 ### Dataset Overview
-The project utilizes the [Wiki-Movie-Plots dataset](https://www.kaggle.com/datasets/jrobischon/wikipedia-movie-plots) — a collection of movie metadata and plot summaries sourced from Wikipedia and other resources. The dataset includes details such as:
-- **Title:** The name of the movie.
-- **Release Year:** The year the movie was released.
-- **Origin/Ethnicity:** The country or cultural origin of the film.
-- **Director:** The director(s) of the film.
-- **Cast:** Key actors and actresses in the movie.
-- **Genre:** The genre(s) associated with the movie.
-- **Wiki Page:** The URL for the Wikipedia page.
-- **Plot:** A detailed plot summary of the movie.
-
-### Dataset Filtering
-While the project primarily focuses on RAG techniques, a brief data filtering step was applied:
-- **Cultural Scope:** Only movies marked as "American" were included.
-- **Temporal Scope:** Only movies released after 1950 were considered.
+The project utilizes the [Wiki-Movie-Plots dataset](https://www.kaggle.com/datasets/jrobischon/wikipedia-movie-plots) — a collection of movie metadata and plot summaries sourced from Wikipedia and other resources. Movies not marked as "American" or released after 1950 are discluded in database.
 
 ### Goals and Use Case
 The primary goal is to assess various RAG configurations in terms of embedding generation, retrieval, and response generation. This encompasses several practical and educational objectives:
