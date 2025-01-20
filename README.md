@@ -110,11 +110,14 @@ or
 ## Sitemap
 ```
 │
+├── Makefile
 ├── README.md
-├── build
+├── data
+│   ├── artifacts
+│   │   └── /
+│   └── chunks
+│       └── /
 ├── docker-compose.yml
-├── playbook.yml
-├── requirements.txt
 └── src
     ├── api
     │   ├── Dockerfile
@@ -128,12 +131,7 @@ or
     │   ├── requirements.txt
     │   └── routes.py
     ├── db
-    │   ├── Dockerfile
-    │   └── data
-    │       ├── README.md
-    │       ├── generator.py
-    │       ├── ingest.py
-    │       └── movie_embeddings.json
+    │   └──  Dockerfile
     ├── llm
     │   ├── Dockerfile
     │   └── README.md
@@ -163,7 +161,6 @@ or
                 ├── TopBilling.css
                 ├── index.css
                 └── terminal.css
-
 ```
 
 ## TODOS

@@ -1,5 +1,6 @@
 import React from "react";
 import EllipsisLoader from "./EllipsisLoader"
+// import ResponseList from "./ResponseList";
 import '../styles/EllipsisLoader.css';
 import "../styles/terminal.css";
 
@@ -16,6 +17,7 @@ const PromptInput = ({ prompt, setPrompt, handleSubmit, loading }) => {
                 rows="5"
                 className="terminal-textarea"
             />
+            
             <div className="terminal-button" disabled={loading} onClick={handleSubmit}>
                 {loading ? <EllipsisLoader /> : "Submit"}
             </div>

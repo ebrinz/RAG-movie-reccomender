@@ -34,7 +34,6 @@ const App = () => {
                 loading={loading}
             />
             <ResponseList responses={responses} />
-            
             <div>
                 {loadingSimilarMovies ? 
                 (
