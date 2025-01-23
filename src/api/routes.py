@@ -5,26 +5,17 @@ from db import fetch_movies, fetch_similar_movies, search_movies_hybrid
 from model_utils import get_embedding, load_model
 import numpy as np
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler("app.log")
-    ]
-)
-
 api_bp = Blueprint('api', __name__, url_prefix='/')
 tokenizer, model, device = load_model()
 
 @api_bp.route('/debug', methods=['POST'])
 def debug_request():
     try:
-        logging.info(f"Raw request data: {request.data}")
+        logger.info(f"Raw request data: {request.data}")
         data = request.get_json(force=True)
         return jsonify(data)
     except Exception as e:
-        logging.error(f"Error in /debug: {e}")
+        logger.error(f"Error in /debug: {e}")
         return jsonify({"error": str(e)}), 400
 
 @api_bp.route('/movies', methods=['GET'])
@@ -37,7 +28,7 @@ def get_movies():
             return jsonify({"error": "Limit must be greater than 0"}), 400
         if offset < 0:
             return jsonify({"error": "Offset must be non-negative"}), 400
-        logging.info(f"Fetching movies with limit={limit}, offset={offset}, title_filter='{title_filter}'")
+        logger.info(f"Fetching movies with limit={limit}, offset={offset}, title_filter='{title_filter}'")
         movies = fetch_movies(
             limit=limit,
             offset=offset,
@@ -53,7 +44,7 @@ def get_movies():
             }
         })
     except Exception as e:
-        logging.error(f"Error fetching movies: {e}", exc_info=True)
+        logger.error(f"Error fetching movies: {e}", exc_info=True)
         return jsonify({"error": f"Unable to fetch movies: {e}"}), 500
 
 @api_bp.route('/vector_search', methods=['POST'])
@@ -69,14 +60,14 @@ def vector_search():
         metric = data.get('metric', 'cosine')
         use_normalized = bool(data.get('use_normalized', True))
         min_similarity = float(data.get('min_similarity', 0.0))
-        logging.info(f"Vector search request - text: '{text}', metric: {metric}, neighbors: {num_neighbors}")
+        logger.info(f"Vector search request - text: '{text}', metric: {metric}, neighbors: {num_neighbors}")
         try:
             embedding = get_embedding(text, tokenizer, model, device)
             if isinstance(embedding, np.ndarray):
                 embedding = embedding.tolist()
-            logging.info(f"Generated embedding of length: {len(embedding)}")
+            logger.info(f"Generated embedding of length: {len(embedding)}")
         except Exception as e:
-            logging.error(f"Error generating embedding: {str(e)}", exc_info=True)
+            logger.error(f"Error generating embedding: {str(e)}", exc_info=True)
             return jsonify({"error": "Failed to generate embedding"}), 500
         results = fetch_similar_movies(
             embedding=embedding,
@@ -93,7 +84,7 @@ def vector_search():
             "num_results": len(results)
         })
     except Exception as e:
-        logging.error(f"Error in vector_search endpoint: {str(e)}", exc_info=True)
+        logger.error(f"Error in vector_search endpoint: {str(e)}", exc_info=True)
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @api_bp.route('/hybrid_search', methods=['POST'])
@@ -113,7 +104,7 @@ def hybrid_search():
             return jsonify({"error": "Invalid metric. Must be 'cosine' or 'euclidean'"}), 400
         if not 0 <= embedding_weight <= 1:
             return jsonify({"error": "embedding_weight must be between 0 and 1"}), 400
-        logging.info(f"Performing hybrid search with {metric} metric")
+        logger.info(f"Performing hybrid search with {metric} metric")
         embedding = get_embedding(text, tokenizer, model, device)
         results = search_movies_hybrid(
             embedding=embedding,
@@ -132,14 +123,14 @@ def hybrid_search():
             "embedding_weight": embedding_weight
         })
     except Exception as e:
-        logging.error(f"Error in hybrid search: {e}", exc_info=True)
+        logger.error(f"Error in hybrid search: {e}", exc_info=True)
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @api_bp.route('/generate', methods=['POST'])
 def generate_prompt():
     try:
         data = request.json
-        logging.info(f"data: {data}")
+        logger.info(f"data: {data}")
         prompt = data.get('prompt', "too many puppies?")
         num_ctx = data.get('num_ctx', 512)
         if not prompt:
