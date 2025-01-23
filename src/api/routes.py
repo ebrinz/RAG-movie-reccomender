@@ -155,7 +155,7 @@ def generate_prompt():
                     }
                 ],
                 "options": {
-                    "num_ctx": f"{num_ctx}",
+                    "num_ctx": num_ctx,
                     "temperature": 1.2,
                     "num_predict": 255,
                     "top_k": 80,

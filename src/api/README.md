@@ -38,3 +38,14 @@ curl -X POST http://localhost:5000/hybrid_search \
     "min_similarity": 0.5
 }'
 ```
+
+
+### ollama task
+
+```
+curl http://localhost:5000/generate \
+-H "Content-Type: application/json" \
+-d '{
+  "prompt": "energon"
+}'
+```

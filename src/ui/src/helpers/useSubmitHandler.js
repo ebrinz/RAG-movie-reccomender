@@ -1,5 +1,10 @@
 import { useState } from "react";
-import { sendPrompt, fetchSimilarMovies } from "../api/api";
+import { sendPrompt, 
+    fetchSimilarMovies, 
+    fetchSimilarMoviesEnhanced, 
+    fetchMoviesWithPagination,
+    performHybridSearch
+ } from "../api/api";
 
 const useSubmitHandler = () => {
     const [loading, setLoading] = useState(false);
@@ -54,7 +59,7 @@ const useSubmitHandler = () => {
 
             setLoadingSimilarMovies(true);
 
-            const similarityData = await fetchSimilarMovies(currentResponse, 5);
+            const similarityData = await fetchSimilarMoviesEnhanced({text: currentResponse});
             console.log(similarityData.results)
             setSimilarMovies(similarityData.results || []);
 

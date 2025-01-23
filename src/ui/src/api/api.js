@@ -1,7 +1,7 @@
 
 export const sendPrompt = async (prompt, onChunk) => {
     try {
-        const response = await fetch("https://localhost:5000/generate", {
+        const response = await fetch("http://localhost:5000/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -39,9 +39,9 @@ export const sendPrompt = async (prompt, onChunk) => {
     }
 };
 
-export const fetchSimilarMovies = async (text, num_neighbors = 5) => {
+export const fetchSimilarMovies = async (text, num_neighbors = 10) => {
     try {
-        const vectorResponse = await fetch("https://localhost:5000/vector_search", {
+        const vectorResponse = await fetch("http://localhost:5000/vector_search", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -69,7 +69,7 @@ export const fetchMoviesWithPagination = async (params = {}) => {
             ...(title && { title })
         }).toString();
 
-        const response = await fetch(`https://localhost:5000/movies?${queryParams}`, {
+        const response = await fetch(`http://localhost:5000/movies?${queryParams}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
@@ -87,14 +87,14 @@ export const fetchMoviesWithPagination = async (params = {}) => {
 export const fetchSimilarMoviesEnhanced = async (params = {}) => {
     const {
         text,
-        num_neighbors = 5,
+        num_neighbors = 15,
         metric = 'cosine',
         use_normalized = true,
         min_similarity = 0.0
     } = params;
 
     try {
-        const response = await fetch("https://localhost:5000/vector_search", {
+        const response = await fetch("http://localhost:5000/vector_search", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -128,7 +128,7 @@ export const performHybridSearch = async (params = {}) => {
     } = params;
 
     try {
-        const response = await fetch("https://localhost:5000/hybrid_search", {
+        const response = await fetch("http://localhost:5000/hybrid_search", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
