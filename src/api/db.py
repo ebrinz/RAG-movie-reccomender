@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from model_utils import normalize_query_embedding, format_vector_for_postgres
-import logging
+from logger import logger
 
 # Database connection settings
 DB_CONFIG = {

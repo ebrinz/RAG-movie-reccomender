@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, Response
 import requests
-import logging
+from logger import logger
 from db import fetch_movies, fetch_similar_movies, search_movies_hybrid
 from model_utils import get_embedding, load_model
 import numpy as np
