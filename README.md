@@ -97,6 +97,7 @@ or
     │   ├── build.py
     │   ├── db.py
     │   ├── ingest.py
+    │   ├── logger.py
     │   ├── main.py
     │   ├── model_utils.py
     │   ├── requirements.txt
@@ -137,10 +138,10 @@ or
 ## TODOS
 
 - [ ] UI: Eliminate ui console warning
-- [ ] API: Remove db data files and dir - maybe leave dummy data
-- [ ] API: troubleshoot possible embeddings mismatch
 - [ ] API: Explore and log embedding evals for different models
 - [ ] API: Explore fine tuning
 - [ ] API: Use Flask API at :80 to serve metrics
-- [ ] UI: Bring llm output into into text field as pseudo terminal
+- [ ] UI: Add query options for new API endpoints
+- [ ] API: automatic vector size identification
+- [ ] API: Add dedicated logging files
 
