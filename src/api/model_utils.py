@@ -1,9 +1,26 @@
 import os
 from dotenv import load_dotenv
 import torch
+import numpy as np
 import argparse
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, ModernBertModel, ModernBertConfig
+from typing import List
 
+
+# refactor logging
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler("app.log")
+    ]
+)
+
+def format_vector_for_postgres(embedding):
+    return f"[{','.join(map(str, embedding))}]"
 
 def load_model():
     model_name = os.getenv("EMBEDDING_MODEL")
@@ -19,14 +36,37 @@ def load_model():
     model.eval()
     return tokenizer, model, device
 
-def get_embedding(text, tokenizer, model, device):  
-    inputs = tokenizer(text, return_tensors='pt', truncation=True, padding=True)
-    inputs = {key: val.to(device) for key, val in inputs.items()}
-    with torch.no_grad():
-        outputs = model(**inputs, output_hidden_states=True)
-    last_hidden_state = outputs.hidden_states[-1]
-    cls_embedding = last_hidden_state[0, 0, :]
-    return cls_embedding.cpu().numpy().tolist()
+def get_embedding(text: str, tokenizer, model, device) -> List[float]:
+    try:
+        logging.info(f"Generating embedding for text: '{text[:100]}...' if len(text) > 100 else text")
+        inputs = tokenizer(
+            text,
+            add_special_tokens=True,
+            max_length=512,
+            padding=True,
+            truncation=True,
+            return_tensors='pt'
+        ).to(device)
+        with torch.no_grad():
+            outputs = model(**inputs)
+            embeddings = outputs.last_hidden_state.mean(dim=1)  # Use mean pooling
+        embedding = embeddings[0].cpu().numpy()
+        if embedding.size == 0:
+            raise ValueError("Generated embedding is empty")
+        logging.info(f"Successfully generated embedding of shape: {embedding.shape}")
+        return embedding.tolist()  
+    except Exception as e:
+        logging.error(f"Error in get_embedding: {str(e)}", exc_info=True)
+        raise
+
+def normalize_query_embedding(embedding: List[float]) -> List[float]:
+    if embedding is None:
+        raise ValueError("Embedding cannot be None")
+    embedding_array = np.array(embedding)
+    norm = np.linalg.norm(embedding_array)
+    if norm == 0:
+        return embedding_array.tolist()
+    return (embedding_array / norm).tolist()
 
 
 if __name__ == "__main__":

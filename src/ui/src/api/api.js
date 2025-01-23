@@ -1,7 +1,7 @@
 
 export const sendPrompt = async (prompt, onChunk) => {
     try {
-        const response = await fetch("http://localhost:5000/generate", {
+        const response = await fetch("https://localhost:5000/generate", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -26,8 +26,7 @@ export const sendPrompt = async (prompt, onChunk) => {
             done = streamDone;
             if (value) {
                 const chunk = decoder.decode(value, { stream: true });
-                console.log("Received chunk:", chunk);
-                fullResponse += chunk;  // Simply accumulate chunk
+                fullResponse += chunk;
                 if (onChunk) {
                     onChunk(chunk);
                 }
@@ -42,7 +41,7 @@ export const sendPrompt = async (prompt, onChunk) => {
 
 export const fetchSimilarMovies = async (text, num_neighbors = 5) => {
     try {
-        const vectorResponse = await fetch("http://localhost:5000/vector_search", {
+        const vectorResponse = await fetch("https://localhost:5000/vector_search", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -60,5 +59,95 @@ export const fetchSimilarMovies = async (text, num_neighbors = 5) => {
     }
 };
 
-  
-  
+// New functions for enhanced features
+export const fetchMoviesWithPagination = async (params = {}) => {
+    const { limit = 10, offset = 0, title = "" } = params;
+    try {
+        const queryParams = new URLSearchParams({
+            limit: limit.toString(),
+            offset: offset.toString(),
+            ...(title && { title })
+        }).toString();
+
+        const response = await fetch(`https://localhost:5000/movies?${queryParams}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Movies API error: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching movies:", error);
+        throw error;
+    }
+};
+
+export const fetchSimilarMoviesEnhanced = async (params = {}) => {
+    const {
+        text,
+        num_neighbors = 5,
+        metric = 'cosine',
+        use_normalized = true,
+        min_similarity = 0.0
+    } = params;
+
+    try {
+        const response = await fetch("https://localhost:5000/vector_search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                text,
+                num_neighbors,
+                metric,
+                use_normalized,
+                min_similarity
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Vector search API error: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error in enhanced similar movies search:", error);
+        throw error;
+    }
+};
+
+export const performHybridSearch = async (params = {}) => {
+    const {
+        text,
+        text_query = "",
+        num_neighbors = 5,
+        metric = 'cosine',
+        use_normalized = true,
+        embedding_weight = 0.7,
+        min_similarity = 0.0
+    } = params;
+
+    try {
+        const response = await fetch("https://localhost:5000/hybrid_search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                text,
+                text_query,
+                num_neighbors,
+                metric,
+                use_normalized,
+                embedding_weight,
+                min_similarity
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Hybrid search API error: ${response.statusText}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error in hybrid search:", error);
+        throw error;
+    }
+};
