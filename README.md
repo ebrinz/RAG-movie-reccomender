@@ -26,10 +26,10 @@ The primary goal is to assess various RAG configurations in terms of embedding g
 
 ## 1: Environment
 ##### Make sure the following are present on host machine
-```
-docker.io or Docker Desktop app
-docker-compose
-```
+
+- docker.io or Docker Desktop app
+- docker-compose
+
 
 ## 2: Parameters
 ##### Adjust .env for embedding chosen model and embedding model's output vector size
@@ -135,9 +135,10 @@ or
                 └── terminal.css
 ```
 
+
 ## TODOS
 
-- [ ] UI: Eliminate ui console warning
+- [ ] API: BUG in the similar movies list response - unresolved
 - [ ] API: Explore and log embedding evals for different models
 - [ ] API: Explore fine tuning
 - [ ] API: Use Flask API at :80 to serve metrics
