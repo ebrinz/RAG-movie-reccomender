@@ -9,23 +9,27 @@ import "../styles/terminal.css";
 
 const PromptInput = ({ prompt, setPrompt, handleSubmit, loading }) => {
     return (
-        <div className="terminal-container">
-            <textarea
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="Type your prompt here..."
-                rows="5"
-                className="terminal-textarea"
-            />
-            
-            <div className="terminal-button" disabled={loading} onClick={handleSubmit}>
-                {loading ? <EllipsisLoader /> : "Submit"}
-            </div>
-        </div>
+      <div className="terminal-container">
+        <textarea
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          placeholder="Type your prompt here..."
+          rows="5"
+          className="terminal-textarea"
+        />
+        
+        <button
+          className="terminal-button"
+          disabled={loading}
+          onClick={handleSubmit}
+        >
+          {loading ? <EllipsisLoader /> : "Submit"}
+        </button>
+      </div>
     );
-};
-
-export default PromptInput;
+  };
+  
+  export default PromptInput;
 
 
 

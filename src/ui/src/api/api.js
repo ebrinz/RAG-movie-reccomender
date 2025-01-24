@@ -89,8 +89,6 @@ export const fetchSimilarMoviesEnhanced = async (params = {}) => {
         text,
         num_neighbors = 15,
         metric = 'cosine',
-        use_normalized = true,
-        min_similarity = 0.0
     } = params;
 
     try {
@@ -100,16 +98,21 @@ export const fetchSimilarMoviesEnhanced = async (params = {}) => {
             body: JSON.stringify({
                 text,
                 num_neighbors,
-                metric,
-                use_normalized,
-                min_similarity
+                metric
             }),
         });
 
         if (!response.ok) {
             throw new Error(`Vector search API error: ${response.statusText}`);
         }
-        return await response.json();
+        
+        const data = await response.json();
+        return {
+            results: data.results,
+            query: data.query,
+            metric: data.metric,
+            numResults: data.num_results
+        };
     } catch (error) {
         console.error("Error in enhanced similar movies search:", error);
         throw error;

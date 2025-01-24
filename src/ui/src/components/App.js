@@ -5,35 +5,35 @@ import ResponseList from "./ResponseList";
 import SimilarMovies from "./SimilarMovies";
 import EllipsisLoader from "./EllipsisLoader"
 
-
 import useSubmitHandler from "../helpers/useSubmitHandler";
-
 import "../styles/terminal.css";
 
 const App = () => {   
     const [prompt, setPrompt] = useState("");
-    const [loadingSimilarMovies, setLoadingSimilarMovies] = useState(false); // testing
-    const { loading, responses, similarMovies, handleSubmit } = useSubmitHandler();
+    const [
+        loadingSimilarMovies, 
+        setLoadingSimilarMovies
+    ] = useState(false); // testing
+    const {
+        loading,
+        similarMovies,
+        handleSubmit
+    } = useSubmitHandler();
 
     const handleSubmitWrapper = async () => {
-        const currentPrompt = prompt;
-        setPrompt("");
-        await handleSubmit(currentPrompt);
+        await handleSubmit(prompt, setPrompt);
+        console.log('similarMovies', similarMovies)
     };
 
     return (
         <div className="terminal">
-            <div>
-                {/* animated banner here  */}
-                <TopBilling />
-            </div>
+            {/* <TopBilling /> */}
             <PromptInput
                 prompt={prompt}
                 setPrompt={setPrompt}
-                handleSubmit={() => handleSubmit(prompt)}
+                handleSubmit={handleSubmitWrapper}
                 loading={loading}
             />
-            <ResponseList responses={responses} />
             <div>
                 {loadingSimilarMovies ? 
                 (
@@ -42,6 +42,7 @@ const App = () => {
                     <SimilarMovies similarMovies={similarMovies} />
                 )}
             </div>
+            <SimilarMovies similarMovies={similarMovies} />  
         </div>
     );
 
