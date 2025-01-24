@@ -24,21 +24,26 @@ def format_vector_for_postgres(embedding):
 
 def load_model():
     model_name = os.getenv("EMBEDDING_MODEL")
-    if "modernbert" in model_name.lower():
-        config = ModernBertConfig()
-        tokenizer = AutoTokenizer.from_pretrained(model_name);
-        model = ModernBertModel.from_pretrained(model_name, trust_remote_code=True)
-    else:
-        tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-        model = AutoModelForSequenceClassification.from_pretrained(model_name, trust_remote_code=True)
+    ##### test
+    # if "modernbert" in model_name.lower():
+    #     config = ModernBertConfig()
+    #     tokenizer = AutoTokenizer.from_pretrained(model_name);
+    #     model = ModernBertModel.from_pretrained(model_name, trust_remote_code=True)
+    # else:
+    #     exit #### test
+    #     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+    #     model = AutoModelForSequenceClassification.from_pretrained(model_name, trust_remote_code=True)
+    config = ModernBertConfig()
+    tokenizer = AutoTokenizer.from_pretrained(model_name);
+    model = ModernBertModel.from_pretrained(model_name, trust_remote_code=True)
+    #######
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
     model.eval()
     return tokenizer, model, device
 
-def get_embedding(text: str, tokenizer, model, device) -> List[float]:
+def get_embedding(text: str, tokenizer, model, device):
     try:
-        logging.info(f"Generating embedding for text: '{text[:100]}...' if len(text) > 100 else text")
         inputs = tokenizer(
             text,
             add_special_tokens=True,
@@ -47,26 +52,24 @@ def get_embedding(text: str, tokenizer, model, device) -> List[float]:
             truncation=True,
             return_tensors='pt'
         ).to(device)
+        
         with torch.no_grad():
             outputs = model(**inputs)
-            embeddings = outputs.last_hidden_state.mean(dim=1)  # Use mean pooling
+            embeddings = outputs.last_hidden_state.mean(dim=1)
+
         embedding = embeddings[0].cpu().numpy()
         if embedding.size == 0:
             raise ValueError("Generated embedding is empty")
-        logging.info(f"Successfully generated embedding of shape: {embedding.shape}")
-        return embedding.tolist()  
+        return embedding
+        
     except Exception as e:
         logging.error(f"Error in get_embedding: {str(e)}", exc_info=True)
         raise
 
-def normalize_query_embedding(embedding: List[float]) -> List[float]:
+def normalize_query_embedding(embedding):
     if embedding is None:
         raise ValueError("Embedding cannot be None")
-    embedding_array = np.array(embedding)
-    norm = np.linalg.norm(embedding_array)
-    if norm == 0:
-        return embedding_array.tolist()
-    return (embedding_array / norm).tolist()
+    return embedding / np.linalg.norm(embedding)
 
 
 if __name__ == "__main__":
