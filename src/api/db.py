@@ -65,21 +65,18 @@ def fetch_movies(limit=10, title_filter="", offset=0):
     finally:
         conn.close()
 
-def fetch_similar_movies(embedding, num_neighbors=5, metric='cosine', use_normalized=True, min_similarity=0.0):
-    """Fetch similar movies using specified distance metric."""
-    if metric not in ['cosine', 'euclidean']:
-        raise ValueError("Metric must be either 'cosine' or 'euclidean'")
+def fetch_similar_movies(embedding, num_neighbors=5, metric='cosine'):
     conn = get_db_connection()
     try:
-        embedding_to_use = normalize_query_embedding(embedding) if metric == 'cosine' else embedding
-        pg_vector = format_vector_for_postgres(embedding_to_use)
-        embedding_column = "embedding_normalized" if use_normalized else "embedding_original"
         if metric == 'cosine':
-            similarity_calc = f"1 - ({embedding_column} <=> '{pg_vector}'::vector)"
-            order_by = f"{embedding_column} <=> '{pg_vector}'::vector"
+            embedding = normalize_query_embedding(embedding)
+            embedding_column = "embedding_normalized"
+            similarity_calc = f"1 - ({embedding_column} <=> %s::vector)"
+        elif metric == 'euclidean':
+            embedding_column = "embedding_original"
+            similarity_calc = f"-({embedding_column} <-> %s::vector)"
         else:
-            similarity_calc = f"exp(-0.1 * ({embedding_column} <-> '{pg_vector}'::vector))"
-            order_by = f"{embedding_column} <-> '{pg_vector}'::vector"
+            raise ValueError("Metric must be either 'cosine' or 'euclidean'")
         query = f"""
             SELECT 
                 title,
@@ -92,16 +89,12 @@ def fetch_similar_movies(embedding, num_neighbors=5, metric='cosine', use_normal
                 {similarity_calc} as similarity
             FROM movies
             WHERE {embedding_column} IS NOT NULL
-            AND {similarity_calc} >= %s
-            ORDER BY {order_by}
+            ORDER BY similarity asc
             LIMIT %s;
         """
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            cursor.execute(query, [min_similarity, num_neighbors])
+            cursor.execute(query, [embedding.tolist(), num_neighbors])
             return cursor.fetchall()
-    except Exception as e:
-        print(f"Error fetching similar movies: {e}")
-        raise
     finally:
         conn.close()
 
