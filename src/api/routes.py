@@ -51,80 +51,72 @@ def get_movies():
 def vector_search():
     try:
         data = request.json
-        if not data:
-            return jsonify({"error": "No JSON data provided"}), 400
-        text = data.get('text')
-        if not text:
-            return jsonify({"error": "Text is required"}), 400
+        if not data or 'text' not in data:
+            return jsonify({"error": "Text query is required"}), 400
+        text = data['text']
         num_neighbors = int(data.get('num_neighbors', 10))
         metric = data.get('metric', 'cosine')
-        use_normalized = bool(data.get('use_normalized', True))
-        min_similarity = float(data.get('min_similarity', 0.0))
-        logger.info(f"Vector search request - text: '{text}', metric: {metric}, neighbors: {num_neighbors}")
+        logger.info(f"Vector search - text: '{text}', metric: {metric}, neighbors: {num_neighbors}")
         try:
             embedding = get_embedding(text, tokenizer, model, device)
-            if isinstance(embedding, np.ndarray):
-                embedding = embedding.tolist()
-            logger.info(f"Generated embedding of length: {len(embedding)}")
+            embedding = np.array(embedding) if not isinstance(embedding, np.ndarray) else embedding
+            logger.info(f"Generated embedding length: {len(embedding)}")
         except Exception as e:
-            logger.error(f"Error generating embedding: {str(e)}", exc_info=True)
-            return jsonify({"error": "Failed to generate embedding"}), 500
+            logger.error(f"Embedding generation failed: {str(e)}", exc_info=True)
+            return jsonify({"error": "Embedding generation failed"}), 500
         results = fetch_similar_movies(
             embedding=embedding,
             num_neighbors=num_neighbors,
-            metric=metric,
-            use_normalized=use_normalized,
-            min_similarity=min_similarity
+            metric=metric
         )
         return jsonify({
             "results": results,
             "query": text,
             "metric": metric,
-            "embedding_type": "normalized" if use_normalized else "original",
             "num_results": len(results)
         })
     except Exception as e:
-        logger.error(f"Error in vector_search endpoint: {str(e)}", exc_info=True)
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+        logger.error(f"Vector search failed: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
-@api_bp.route('/hybrid_search', methods=['POST'])
-def hybrid_search():
-    try:
-        data = request.json
-        text = data.get('text')
-        text_query = data.get('text_query', '')
-        num_neighbors = data.get('num_neighbors', 10)
-        metric = data.get('metric', 'cosine')
-        use_normalized = data.get('use_normalized', True)
-        embedding_weight = data.get('embedding_weight', 0.7)
-        min_similarity = data.get('min_similarity', 0.0)
-        if not text:
-            return jsonify({"error": "Text for embedding is required"}), 400
-        if metric not in ['cosine', 'euclidean']:
-            return jsonify({"error": "Invalid metric. Must be 'cosine' or 'euclidean'"}), 400
-        if not 0 <= embedding_weight <= 1:
-            return jsonify({"error": "embedding_weight must be between 0 and 1"}), 400
-        logger.info(f"Performing hybrid search with {metric} metric")
-        embedding = get_embedding(text, tokenizer, model, device)
-        results = search_movies_hybrid(
-            embedding=embedding,
-            text_query=text_query,
-            num_neighbors=num_neighbors,
-            metric=metric,
-            use_normalized=use_normalized,
-            embedding_weight=embedding_weight,
-            min_similarity=min_similarity
-        )
-        return jsonify({
-            "results": results,
-            "embedding_query": text,
-            "text_query": text_query,
-            "metric": metric,
-            "embedding_weight": embedding_weight
-        })
-    except Exception as e:
-        logger.error(f"Error in hybrid search: {e}", exc_info=True)
-        return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+# @api_bp.route('/hybrid_search', methods=['POST'])
+# def hybrid_search():
+#     try:
+#         data = request.json
+#         text = data.get('text')
+#         text_query = data.get('text_query', '')
+#         num_neighbors = data.get('num_neighbors', 10)
+#         metric = data.get('metric', 'cosine')
+#         use_normalized = data.get('use_normalized', True)
+#         embedding_weight = data.get('embedding_weight', 0.7)
+#         min_similarity = data.get('min_similarity', 0.0)
+#         if not text:
+#             return jsonify({"error": "Text for embedding is required"}), 400
+#         if metric not in ['cosine', 'euclidean']:
+#             return jsonify({"error": "Invalid metric. Must be 'cosine' or 'euclidean'"}), 400
+#         if not 0 <= embedding_weight <= 1:
+#             return jsonify({"error": "embedding_weight must be between 0 and 1"}), 400
+#         logger.info(f"Performing hybrid search with {metric} metric")
+#         embedding = get_embedding(text, tokenizer, model, device)
+#         results = search_movies_hybrid(
+#             embedding=embedding,
+#             text_query=text_query,
+#             num_neighbors=num_neighbors,
+#             metric=metric,
+#             use_normalized=use_normalized,
+#             embedding_weight=embedding_weight,
+#             min_similarity=min_similarity
+#         )
+#         return jsonify({
+#             "results": results,
+#             "embedding_query": text,
+#             "text_query": text_query,
+#             "metric": metric,
+#             "embedding_weight": embedding_weight
+#         })
+#     except Exception as e:
+#         logger.error(f"Error in hybrid search: {e}", exc_info=True)
+#         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
 
 @api_bp.route('/generate', methods=['POST'])
 def generate_prompt():
