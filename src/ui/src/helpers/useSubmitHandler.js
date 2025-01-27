@@ -1,85 +1,79 @@
 import { useState } from "react";
-import { sendPrompt, 
-    fetchSimilarMovies, 
-    fetchSimilarMoviesEnhanced, 
-    fetchMoviesWithPagination,
-    performHybridSearch
- } from "../api/api";
+import { sendPrompt, fetchSimilarMoviesEnhanced } from "../api/api";
 
 const useSubmitHandler = () => {
     const [loading, setLoading] = useState(false);
+    const [loadingSimilar, setLoadingSimilar] = useState(false);
     const [responses, setResponses] = useState([]);
     const [similarMovies, setSimilarMovies] = useState([]);
-
-    // const [loadingSimilarMovies, setLoadingSimilarMovies] = useState(false); // testing
-
+    const [currentResponse, setCurrentResponse] = useState("");
 
     const handleSubmit = async (prompt, setPrompt) => {
         if (!prompt) return;
         setLoading(true);
-        setSimilarMovies([]);
-
-        console.log('prompt', prompt)
-        console.log('setPrompt', setPrompt)
-    
-        let currentResponse = "";
+        // setSimilarMovies([]);
         let buffer = "";
-    
+        setCurrentResponse("");
+        
+        setPrompt("");
         setResponses(prev => [...prev, { prompt, response: "" }]);
     
         try {
-          // 2. This function streams the response from the server
-          await sendPrompt(prompt, (chunk) => {
-            buffer += chunk;
-            let lines = buffer.split("\n");
-            buffer = lines.pop();
-            for (let line of lines) {
-              if (!line.trim()) continue;
-              try {
-                const parsed = JSON.parse(line);
-                if (parsed.message) {
-                  currentResponse += parsed.message.content;
-                  
-                  // 3. Update the parent's prompt with the streaming text
-                  //    so <textarea> displays the output in real time
-                  if (setPrompt) {
-                    setPrompt(currentResponse);
-                  }
-    
-                  setResponses((prev) => {
-                    const updatedResponses = [...prev];
-                    updatedResponses[updatedResponses.length - 1] = {
-                      prompt: prompt,
-                      response: currentResponse,
-                    };
-                    return updatedResponses;
-                  });
+            await sendPrompt(prompt, (chunk) => {
+                buffer += chunk;
+                let lines = buffer.split("\n");
+                buffer = lines.pop();
+                
+                for (let line of lines) {
+                    if (!line.trim()) continue;
+                    try {
+                        const parsed = JSON.parse(line);
+                        if (parsed.message) {
+                            const newContent = parsed.message.content;
+                            setCurrentResponse(prev => prev + newContent);
+                            setPrompt(prev => prev + newContent);
+                        }
+                    } catch (e) {
+                        console.error("JSON parse error:", e, "Line:", line);
+                    }
                 }
-              } catch (e) {
-                console.error("JSON parse error:", e, "Line:", line);
-              }
-            }
-          });
-    
-          const similarityData = await fetchSimilarMoviesEnhanced({ text: currentResponse, num_neighbors: 15, metric: 'cosine' });
-          setSimilarMovies(similarityData.results || []);
-
+            });
         } catch (error) {
             console.error("Error:", error);
             alert("An error occurred. Check the console for details.");
         } finally {
             setLoading(false);
         }
+    };
 
+    const handleSimilarMovies = async (prompt) => {
+        if (!prompt) return;
+        setLoadingSimilar(true);
+        setSimilarMovies([]);
+        try {
+            const similarityData = await fetchSimilarMoviesEnhanced({ 
+                text: prompt, 
+                num_neighbors: 15, 
+                metric: 'cosine' 
+            });
+            console.log('similarityData', similarityData)
+            setSimilarMovies(similarityData.results || []);
+        } catch (error) {
+            console.error("Error fetching similar movies:", error);
+            alert("Error fetching similar movies. Check console for details.");
+        } finally {
+            setLoadingSimilar(false);
+        }
     };
 
     return {
         loading,
+        loadingSimilar,
         responses,
         similarMovies,
-        handleSubmit
+        handleSubmit,
+        handleSimilarMovies
     };
-    
 };
 
 export default useSubmitHandler;

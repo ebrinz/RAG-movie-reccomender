@@ -117,6 +117,53 @@ def vector_search():
 #     except Exception as e:
 #         logger.error(f"Error in hybrid search: {e}", exc_info=True)
 #         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
+    
+@api_bp.route('/hybrid_search', methods=['POST'])
+def hybrid_search():
+    try:
+        data = request.json
+        if not data or 'text' not in data:
+            return jsonify({"error": "Text query is required"}), 400
+            
+        text = data['text']
+        num_neighbors = int(data.get('num_neighbors', 10))
+        metric = data.get('metric', 'cosine')
+        text_query = data.get('text_query', '')
+        use_normalized = data.get('use_normalized', True)
+        embedding_weight = data.get('embedding_weight', 0.7)
+        min_similarity = data.get('min_similarity', 0.0)
+
+        logger.info(f"Hybrid search - text: '{text}', metric: {metric}, neighbors: {num_neighbors}")
+
+        try:
+            embedding = get_embedding(text, tokenizer, model, device)
+            embedding = np.array(embedding) if not isinstance(embedding, np.ndarray) else embedding
+            logger.info(f"Generated embedding length: {len(embedding)}")
+        except Exception as e:
+            logger.error(f"Embedding generation failed: {str(e)}", exc_info=True)
+            return jsonify({"error": "Embedding generation failed"}), 500
+
+        results = search_movies_hybrid(
+            embedding=embedding,
+            text_query=text_query,
+            num_neighbors=num_neighbors,
+            metric=metric,
+            use_normalized=use_normalized,
+            embedding_weight=embedding_weight,
+            min_similarity=min_similarity
+        )
+
+        return jsonify({
+            "results": results,
+            "query": text,
+            "text_query": text_query,
+            "metric": metric,
+            "num_results": len(results),
+            "embedding_weight": embedding_weight
+        })
+    except Exception as e:
+        logger.error(f"Hybrid search failed: {str(e)}", exc_info=True)
+        return jsonify({"error": str(e)}), 500
 
 @api_bp.route('/generate', methods=['POST'])
 def generate_prompt():

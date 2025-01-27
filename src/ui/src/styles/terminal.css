@@ -47,21 +47,25 @@ html, body {
     box-sizing: border-box;
 }
 
-/* Button styling */
-.terminal-button {
+.terminal-buttons {
+    display: flex;
+    gap: 1rem;
     margin-top: 10px;
+    width: 100%;
+}
+
+.terminal-button {
+    flex: 1;
     padding: 10px;
     font-size: 16px;
     font-family: 'Courier New', monospace;
     text-align: center;
-    display: block;
     cursor: pointer;
-    background-color: rgb(255, 158, 3); /* Terminal green */
-    color: rgba(0, 0, 0, 0.9); /* Black text for "Submit" */
+    background-color: rgb(255, 158, 3);
+    color: rgba(0, 0, 0, 0.9);
     border: 2px solid rgb(255, 158, 3);
     border-radius: 4px;
     transition: background-color 0.3s;
-    width: 100%;
     box-sizing: border-box;
 }
 

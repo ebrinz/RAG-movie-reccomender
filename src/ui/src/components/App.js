@@ -10,14 +10,12 @@ import "../styles/terminal.css";
 
 const App = () => {   
     const [prompt, setPrompt] = useState("");
-    const [
-        loadingSimilarMovies, 
-        setLoadingSimilarMovies
-    ] = useState(false); // testing
     const {
         loading,
+        loadingSimilar,
         similarMovies,
-        handleSubmit
+        handleSubmit,
+        handleSimilarMovies
     } = useSubmitHandler();
 
     const handleSubmitWrapper = async () => {
@@ -27,21 +25,16 @@ const App = () => {
 
     return (
         <div className="terminal">
-            {/* <TopBilling /> */}
+            <TopBilling />
             <PromptInput
                 prompt={prompt}
                 setPrompt={setPrompt}
                 handleSubmit={handleSubmitWrapper}
+                handleSimilarMovies={handleSimilarMovies} 
                 loading={loading}
+                similarMovies={similarMovies}
+                loadingSimilar={loadingSimilar}
             />
-            <div>
-                {loadingSimilarMovies ? 
-                (
-                    <EllipsisLoader />
-                ) : (
-                    <SimilarMovies similarMovies={similarMovies} />
-                )}
-            </div>
             <SimilarMovies similarMovies={similarMovies} />  
         </div>
     );
