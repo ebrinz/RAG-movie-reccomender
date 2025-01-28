@@ -1,0 +1,26 @@
+models:
+  - name: sentence-transformers/all-MiniLM-L6-v2
+    description: Lightweight general-purpose embedding model
+  - name: sentence-transformers/all-mpnet-base-v2
+    description: MPNet-based model with strong performance
+  - name: intfloat/e5-large-v2
+    description: E5 large model optimized for similarity search
+
+output_dir: results/embedding_benchmarks
+batch_size: 32
+device: mps
+metrics:
+  - mrr
+  - ndcg@5
+  - ndcg@10
+
+dataset:
+  cache_dir: ../data/cache
+  min_length: 50
+  max_length: 512
+  n_samples: 1000
+  n_queries: 100
+
+test_data:
+  max_length: 512
+  min_length: 50

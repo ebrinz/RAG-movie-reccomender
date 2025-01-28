@@ -100,3 +100,41 @@ room:
 	mkdir -p $$ARTIFACT_DIR; \
 	mv ./data/chunks/* $$ARTIFACT_DIR/ || echo "No files to move.";
 	@echo "Offload complete. Files moved to ./data/artifacts/$$EMBEDDING_MODEL."
+
+
+########## EVALS
+
+# Setup evals environment for model analysis
+setup-evals-env:
+	cd evals && uv venv && source .venv/bin/activate && \
+	uv pip install -r requirements.txt && \
+	uv pip install ipykernel jupyter && \
+	python -m ipykernel install --user --name=evals-kernel
+
+#
+# Download dataset
+download-evals-data:
+	cd evals && python -m embedding.cli download --config config/embedding_eval.yaml
+
+# Prepare evaluation data
+prepare-evals:
+	cd evals && python -m embedding.cli prepare --config config/embedding_eval.yaml
+
+# Run evaluation with prepared data
+run-evals:
+	cd evals && python -m embedding.cli evaluate \
+		--config config/embedding_eval.yaml \
+		--output results/embedding_benchmarks/results.csv \
+		--verbose
+
+# Run complete evaluation pipeline
+evals: download-evals-data prepare-evals run-evals
+
+# Watch evaluation tests
+test-evals-watch:
+	cd evals && pytest-watch embedding/tests/ -- -v --cov=embedding
+
+# Clean up evals environment after use
+clean-evals-env:
+	rm -rf evals/.venv
+	which jupyter > /dev/null && jupyter kernelspec uninstall evals-kernel -y || true
