@@ -131,7 +131,6 @@ def hybrid_search():
         text_query = data.get('text_query', '')
         use_normalized = data.get('use_normalized', True)
         embedding_weight = data.get('embedding_weight', 0.7)
-        min_similarity = data.get('min_similarity', 0.0)
 
         logger.info(f"Hybrid search - text: '{text}', metric: {metric}, neighbors: {num_neighbors}")
 
@@ -150,7 +149,6 @@ def hybrid_search():
             metric=metric,
             use_normalized=use_normalized,
             embedding_weight=embedding_weight,
-            min_similarity=min_similarity
         )
 
         return jsonify({

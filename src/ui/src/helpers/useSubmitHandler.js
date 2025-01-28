@@ -53,7 +53,7 @@ const useSubmitHandler = () => {
         try {
             const similarityData = await fetchSimilarMoviesEnhanced({ 
                 text: prompt, 
-                num_neighbors: 15, 
+                num_neighbors: 10, 
                 metric: 'cosine' 
             });
             console.log('similarityData', similarityData)

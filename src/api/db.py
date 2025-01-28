@@ -89,7 +89,7 @@ def fetch_similar_movies(embedding, num_neighbors=5, metric='cosine'):
                 {similarity_calc} as similarity
             FROM movies
             WHERE {embedding_column} IS NOT NULL
-            ORDER BY similarity asc
+            ORDER BY similarity DESC
             LIMIT %s;
         """
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
