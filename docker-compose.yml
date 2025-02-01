@@ -70,6 +70,7 @@ services:
     restart: always
     volumes:
       - ./src/ui:/app
+      - /app/node_modules
     ports:
       - "3000:3000"
     
