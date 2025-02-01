@@ -1,0 +1,117 @@
+.search-container {
+    position: relative;
+    width: 100%;
+  }
+  
+  .search-box {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding-left: 2.5rem;
+    height: 3rem;
+  }
+  
+  .search-results {
+    position: absolute;
+    top: 100%; /* Position right below the search input */
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    width: 100%;
+    border: 2px solid rgb(255, 158, 3);
+    background-color: black;
+    z-index: 10; /* Make it appear above other content */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Optional: add shadow */
+  }
+  
+  .search-loading {
+    padding: 1rem;
+    text-align: center;
+    color: rgb(255, 158, 3);
+  }
+  
+  .results-table-container {
+    max-height: 16rem;
+    overflow-y: auto;
+  }
+  
+  .results-table {
+    width: 100%;
+  }
+  
+  .results-header {
+    position: sticky;
+    top: 0;
+    background-color: black;
+  }
+  
+  .results-header-row {
+    border-bottom: 1px solid rgb(255, 158, 3);
+  }
+  
+  .results-header-cell {
+    text-align: left;
+    padding: 0.5rem;
+    color: rgb(255, 158, 3);
+  }
+  
+  .results-row {
+    cursor: pointer;
+    border-bottom: 1px solid rgb(255, 158, 3);
+  }
+  
+  .results-row:last-child {
+    border-bottom: none;
+  }
+  
+  .results-row:hover {
+    background-color: rgba(255, 158, 3, 0.2);
+  }
+  
+  .results-cell {
+    padding: 0.5rem;
+    color: rgb(255, 158, 3);
+  }
+  
+  .results-cell-title {
+    font-weight: bold;
+  }
+  
+  .no-results {
+    padding: 1rem;
+    text-align: center;
+    color: rgb(255, 158, 3);
+  }
+  
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-top: 2px solid rgb(255, 158, 3);
+    gap: 1rem; /* Add space between items */
+  }
+  
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Space between buttons */
+    min-width: 33%; /* Give buttons more room */
+  }
+  
+  .pagination-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-width: 5rem; /* Ensure consistent button width */
+  }
+  
+  .pagination-text {
+    color: rgb(255, 158, 3);
+    text-align: center;
+    flex: 1;
+  }
