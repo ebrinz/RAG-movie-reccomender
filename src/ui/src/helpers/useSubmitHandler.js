@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { sendPrompt, fetchSimilarMoviesEnhanced } from "../api/api";
+import { sendPrompt, fetchSimilarMoviesEnhanced, fetchMoviesWithPagination } from "../api/api";
 
 const useSubmitHandler = () => {
     const [loading, setLoading] = useState(false);
@@ -66,13 +66,18 @@ const useSubmitHandler = () => {
         }
     };
 
+    const handleMovieSelect = (movie) => {
+        return `${movie.plot_summary}`;
+    };
+
     return {
         loading,
         loadingSimilar,
         responses,
         similarMovies,
         handleSubmit,
-        handleSimilarMovies
+        handleSimilarMovies,
+        handleMovieSelect
     };
 };
 

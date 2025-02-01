@@ -24,10 +24,33 @@ def fetch_movies(limit=10, title_filter="", offset=0):
     conn = get_db_connection()
     try:
         with conn.cursor() as cursor:
+            # Ensure pg_trgm extension
             cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
             conn.commit()
+
         with conn.cursor(cursor_factory=RealDictCursor) as cursor:
-            query = """
+            # 1) Query for total count (no LIMIT/OFFSET)
+            count_query = """
+                SELECT 
+                    COUNT(*) AS total
+                FROM movies
+                WHERE
+                    CASE 
+                        WHEN %s != '' THEN 
+                            title ILIKE %s
+                            OR similarity(lower(title), lower(%s)) > 0.3
+                        ELSE TRUE
+                    END
+            """
+            like_pattern = f"%{title_filter}%" if title_filter else ""
+            cursor.execute(
+                count_query,
+                (title_filter, like_pattern, title_filter)
+            )
+            total_count = cursor.fetchone()['total']
+
+            # 2) Query for actual data with pagination
+            data_query = """
                 SELECT 
                     id,
                     title,
@@ -51,19 +74,28 @@ def fetch_movies(limit=10, title_filter="", offset=0):
                         ELSE release_year 
                     END DESC
                 OFFSET %s
-                LIMIT %s;
+                LIMIT %s
             """
-            like_pattern = f"%{title_filter}%" if title_filter else ""
             cursor.execute(
-                query,
-                (title_filter, like_pattern, title_filter, title_filter, title_filter, offset, limit)
+                data_query,
+                (title_filter, like_pattern, title_filter,
+                 title_filter, title_filter,
+                 offset, limit)
             )
-            return cursor.fetchall() 
+            rows = cursor.fetchall()
+
+            # Return both data and total_count
+            return {
+                "movies": rows,
+                "total_count": total_count
+            }
+
     except Exception as e:
         print(f"Error fetching movies: {e}")
         raise
     finally:
         conn.close()
+
 
 def fetch_similar_movies(embedding, num_neighbors=5, metric='cosine'):
     conn = get_db_connection()

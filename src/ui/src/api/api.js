@@ -59,7 +59,6 @@ export const fetchSimilarMovies = async (text, num_neighbors = 10) => {
     }
 };
 
-// New functions for enhanced features
 export const fetchMoviesWithPagination = async (params = {}) => {
     const { limit = 10, offset = 0, title = "" } = params;
     try {
@@ -68,16 +67,42 @@ export const fetchMoviesWithPagination = async (params = {}) => {
             offset: offset.toString(),
             ...(title && { title })
         }).toString();
-
         const response = await fetch(`http://localhost:5000/movies?${queryParams}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
-
         if (!response.ok) {
             throw new Error(`Movies API error: ${response.statusText}`);
         }
-        return await response.json();
+
+        const decoder = new TextDecoder();
+        const reader = response.body.getReader();
+        let buffer = '';
+        let result = { movies: [], total_count: 0 };
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            try {
+                result = JSON.parse(buffer);
+                buffer = '';
+            } catch {
+                continue;
+            }
+        }
+        buffer += decoder.decode();
+        if (buffer) {
+            try {
+                result = JSON.parse(buffer);
+            } catch (e) {
+                console.error('Error parsing final buffer:', e);
+            }
+        }
+        console.log('Parsed movies result:', result);
+        return {
+            results: result.movies || [],
+            total_count: result.total_count || 0
+        };
     } catch (error) {
         console.error("Error fetching movies:", error);
         throw error;

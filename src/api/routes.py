@@ -40,7 +40,7 @@ def get_movies():
                 "limit": limit,
                 "offset": offset,
                 "title_filter": title_filter if title_filter else None,
-                "count": len(movies)
+                "count": len(movies),
             }
         })
     except Exception as e:

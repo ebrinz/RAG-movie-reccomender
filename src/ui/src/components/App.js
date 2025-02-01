@@ -15,7 +15,8 @@ const App = () => {
         loadingSimilar,
         similarMovies,
         handleSubmit,
-        handleSimilarMovies
+        handleSimilarMovies,
+        handleMovieSelect
     } = useSubmitHandler();
 
     const handleSubmitWrapper = async () => {
@@ -31,6 +32,7 @@ const App = () => {
                 setPrompt={setPrompt}
                 handleSubmit={handleSubmitWrapper}
                 handleSimilarMovies={handleSimilarMovies} 
+                handleMovieSelect={handleMovieSelect}
                 loading={loading}
                 similarMovies={similarMovies}
                 loadingSimilar={loadingSimilar}

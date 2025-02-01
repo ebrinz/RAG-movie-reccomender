@@ -1,14 +1,21 @@
 import React from "react";
 import EllipsisLoader from "./EllipsisLoader";
+import SearchMovies from './SearchMovies';
 import '../styles/EllipsisLoader.css';
 import "../styles/terminal.css";
 
-const PromptInput = ({ prompt, setPrompt, handleSubmit, handleSimilarMovies, loading, loadingSimilar }) => {
+const PromptInput = ({ prompt, setPrompt, handleSubmit, handleSimilarMovies, handleMovieSelect, loading, loadingSimilar }) => {
   const onSubmit = () => handleSubmit(prompt, setPrompt);
   const onSimilarMovies = () => handleSimilarMovies(prompt);
+  
+  const onMovieSelect = (movie) => {
+    const newPrompt = handleMovieSelect(movie);
+    setPrompt(newPrompt);
+  };
 
   return (
     <div className="terminal-container">
+      <SearchMovies onMovieSelect={onMovieSelect} />
       <textarea
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
